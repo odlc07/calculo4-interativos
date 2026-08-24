@@ -139,6 +139,11 @@ body {
 
 .cabecalho { margin-bottom: var(--e6); }
 
+/* Na capa, o texto de abertura acompanha o título: um pouco maior que a prosa
+   comum no primeiro parágrafo, para dar hierarquia sem centralizar nada. */
+.capa .introducao { margin-top: var(--e4); }
+.capa .introducao p:first-child { font-size: 1.06rem; color: var(--tinta-media); }
+
 .disciplina {
   font-family: var(--sans);
   font-size: .72rem;
@@ -522,19 +527,38 @@ input[type="number"]:focus-visible { outline: 2px solid var(--destaque); outline
 
 /* ---- cartões da página inicial ------------------------------------------ */
 
+/* Grade fixa de duas colunas: os quatro módulos formam um único bloco 2x2.
+   auto-fit não serve aqui — a quebra dependeria da largura da janela e a
+   página perderia o alinhamento em telas intermediárias. */
 .cartoes {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(19rem, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: var(--e5);
+  align-items: stretch;
 }
 .cartao {
   display: flex;
   flex-direction: column;
   background: var(--papel);
   border: 1px solid var(--linha);
+  border-radius: 3px;
+  overflow: hidden;
+  transition: border-color .14s ease, box-shadow .14s ease;
 }
-.miniatura { height: 150px; border-bottom: 1px solid var(--linha); }
-.cartao-corpo { padding: var(--e4); display: flex; flex-direction: column; flex: 1; }
+.cartao:hover { border-color: var(--linha-forte); box-shadow: 0 1px 4px rgba(0, 0, 0, .05); }
+.cartao:focus-within { border-color: var(--destaque); }
+.miniatura {
+  display: block;
+  width: 100%;
+  height: 172px;
+  border-bottom: 1px solid var(--linha);
+}
+.cartao-corpo {
+  padding: var(--e4) var(--e4) var(--e5);
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
 .cartao-corpo .subtitulo-cartao {
   font-family: var(--sans);
   font-size: .7rem;
@@ -761,6 +785,8 @@ input[type="number"]:focus-visible { outline: 2px solid var(--destaque); outline
   body { padding: var(--e5) var(--e4) var(--e6); font-size: 16px; }
   h1 { font-size: 1.6rem; }
   h2 { margin-top: var(--e6); }
+  .cartoes { grid-template-columns: 1fr; gap: var(--e4); }
+  .miniatura { height: 150px; }
   .controle { flex-basis: 100%; }
   .canvas-palco { height: 340px; }
   .canvas-espectro { height: 220px; }

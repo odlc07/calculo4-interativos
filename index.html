@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="utf-8">
-<meta name="description" content="Duas visualizações interativas sobre convergência de séries de Fourier, para a disciplina de Cálculo 4 do ICMC-USP.">
+<meta name="description" content="Quatro módulos interativos sobre convergência: séries de Fourier, sequências recursivas e funções geratrizes, para a disciplina de Cálculo 4 do ICMC-USP.">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Convergência e decaimento em séries de Fourier — Cálculo 4</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2032%2032%22%3E%3Ccircle%20cx%3D%2213%22%20cy%3D%2216%22%20r%3D%229%22%20fill%3D%22none%22%20stroke%3D%22%2316606e%22%20stroke-width%3D%222%22%2F%3E%3Ccircle%20cx%3D%2222%22%20cy%3D%2216%22%20r%3D%224.5%22%20fill%3D%22none%22%20stroke%3D%22%239aa0a4%22%20stroke-width%3D%221.6%22%2F%3E%3Ccircle%20cx%3D%2226.5%22%20cy%3D%2216%22%20r%3D%222.6%22%20fill%3D%22%2316606e%22%2F%3E%3C%2Fsvg%3E">
@@ -22,37 +22,41 @@
     <a href="geratriz.html">Geratriz</a>
   </nav>
 
-  <header class="cabecalho">
+  <header class="cabecalho capa">
     <p class="disciplina">SMA0356 / SMA0803 — ICMC-USP</p>
     <h1>Convergência e decaimento em séries de Fourier</h1>
+    <div class="introducao">
+      <p>
+        Quatro módulos interativos sobre convergência. A diferença em relação a uma animação
+        em laço é que aqui <span class="destaque-texto">o aluno controla o parâmetro</span>: dá
+        para parar num valor, comparar dois números lado a lado e voltar atrás — que é o que
+        uma patologia de convergência exige para ser percebida.
+      </p>
+      <p>
+        A notação segue as notas da disciplina: intervalo <span class="math" data-math="[-L,L]"></span>,
+        convenção com <span class="math" data-math="a_0/2"></span>, e coeficiente complexo escrito
+        <span class="math" data-math="\widehat{f}(n)"></span>. A página de
+        <a href="teoria.html">teoria</a> reúne as definições e os enunciados completos.
+      </p>
+    </div>
   </header>
 
-  <div class="introducao">
-    <p>
-      Duas visualizações interativas sobre convergência de séries de Fourier. A diferença em
-      relação a uma animação em laço é que aqui <span class="destaque-texto">o aluno controla o
-      parâmetro</span>: dá para parar num valor, comparar dois números lado a lado e voltar
-      atrás — que é o que uma patologia de convergência exige para ser percebida.
-    </p>
-    <p>
-      A notação segue as notas da disciplina: intervalo <span class="math" data-math="[-L,L]"></span>,
-      convenção com <span class="math" data-math="a_0/2"></span>, e coeficiente complexo escrito
-      <span class="math" data-math="\widehat{f}(n)"></span>. A página de
-      <a href="teoria.html">teoria</a> reúne as definições e os enunciados completos.
-    </p>
+  <h2>Os módulos</h2>
+
+  <div class="cartoes">
+
     <article class="cartao">
       <canvas id="mini-epiciclos" class="miniatura"
               aria-label="Miniatura do módulo de epiciclos: astroide em traço fino cinza, cadeia de círculos em cinza e reconstrução por poucos termos de Fourier em azul."></canvas>
       <div class="cartao-corpo">
         <p class="subtitulo-cartao">Módulo 1</p>
         <h3 class="titulo">Epiciclos e decaimento</h3>
+        <p class="crenca-cartao">“Uma quina e um bico decaem igual: nos dois a curva deixa de ser derivável.”</p>
         <p>
-          Curvas algébricas fechadas viram <span class="math" data-math="z(t)=x(t)+iy(t)"></span>,
-          e cada termo <span class="math" data-math="\widehat{f}(n)e^{int}"></span> é um vetor
-          girando. O corolário de que <span class="math" data-math="n^k\widehat{f}(n)\to0"></span>
-          quando <span class="math" data-math="f"></span> tem <span class="math" data-math="k"></span>
-          derivadas é qualitativo — aqui a taxa é medida, e conferida em curvas com
-          singularidades conhecidas.
+          Curvas fechadas viram <span class="math" data-math="z(t)=x(t)+iy(t)"></span>, e cada
+          termo <span class="math" data-math="\widehat{f}(n)e^{int}"></span> é um vetor girando.
+          O corolário <span class="math" data-math="n^k\widehat{f}(n)\to0"></span> é qualitativo;
+          aqui a taxa é medida em seis curvas e comparada com a previsão teórica.
         </p>
         <a class="acao" href="epiciclos.html">Abrir módulo</a>
       </div>
@@ -64,22 +68,16 @@
       <div class="cartao-corpo">
         <p class="subtitulo-cartao">Módulo 2</p>
         <h3 class="titulo">Convergência uniforme</h3>
+        <p class="crenca-cartao">“Somando termos suficientes, o erro máximo sempre encolhe.”</p>
         <p>
           Onda triangular contra onda quadrada, com um único slider de
           <span class="math" data-math="N"></span> controlando as duas. Na triangular o erro
           máximo cai a zero; na quadrada ele não se move, e o overshoot de Gibbs estaciona em
-          8,95% do salto por mais termos que se somem. Inclui três identidades numéricas
-          convergindo ao vivo.
+          8,95% do salto. Inclui três identidades numéricas convergindo ao vivo.
         </p>
         <a class="acao" href="convergencia.html">Abrir módulo</a>
       </div>
     </article>
-
-  </div>
-
-  <h2>Os módulos</h2>
-
-  <div class="cartoes">
 
     <article class="cartao">
       <canvas id="mini-teia" class="miniatura"
@@ -90,7 +88,7 @@
         <p class="crenca-cartao">“O limite de uma sequência recursiva depende do valor inicial.”</p>
         <p>
           Arraste <span class="math" data-math="a_0"></span> pelo domínio inteiro de
-          <span class="math" data-math="sqrt{6+x}"></span> e veja o limite não se mover.
+          <span class="math" data-math="\sqrt{6+x}"></span> e veja o limite não se mover.
           Pontos fixos classificados por <span class="math" data-math="|g'(p)|"></span>, e a
           raiz espúria <span class="math" data-math="-2"></span> marcada com a explicação de
           por que a álgebra a produz e a função a rejeita.
@@ -105,7 +103,7 @@
       <div class="cartao-corpo">
         <p class="subtitulo-cartao">Módulo 4</p>
         <h3 class="titulo">Da recorrência ao raio</h3>
-        <p class="crenca-cartao">“Raio de convergência é o número que sai do teste da razão, e não significa mais nada.”</p>
+        <p class="crenca-cartao">“Raio de convergência é o número que sai do teste da razão, e nada além disso.”</p>
         <p>
           A função geratriz de uma recorrência linear é racional, e
           <span class="math" data-math="R"></span> é a distância até a singularidade complexa
@@ -142,7 +140,7 @@
         </tr>
         <tr>
           <th scope="row"><code>nested-sqrt</code></th>
-          <td>Radicais encaixados como iteração de <span class="math" data-math="g(x)=sqrt{6+x}"></span></td>
+          <td>Radicais encaixados como iteração de <span class="math" data-math="g(x)=\sqrt{6+x}"></span></td>
           <td><a href="teia.html">Diagrama de teia</a></td>
         </tr>
         <tr>
@@ -161,8 +159,8 @@
           <td><a href="convergencia.html">Convergência uniforme</a></td>
         </tr>
         <tr>
-          <th scope="row">decaimento de <span class="math" data-math="widehat{f}(n)"></span></th>
-          <td>O corolário <span class="math" data-math="n^kwidehat{f}(n)	o0"></span> medido, não só enunciado</td>
+          <th scope="row">decaimento de <span class="math" data-math="\widehat{f}(n)"></span></th>
+          <td>O corolário <span class="math" data-math="n^k\widehat{f}(n)\to0"></span> medido, não só enunciado</td>
           <td><a href="epiciclos.html">Epiciclos e decaimento</a></td>
         </tr>
       </tbody>
