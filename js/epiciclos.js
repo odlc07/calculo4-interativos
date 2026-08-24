@@ -124,31 +124,11 @@
   // Desenho
   // =========================================================================
 
-  /* Escala isométrica: expande o domínio menor para que uma unidade em x meça
-   * o mesmo que uma unidade em y. Sem isso o círculo sai elipse. */
-  function escalaIsometrica(w, h, margem, caixa) {
-    var pw = w - margem.esq - margem.dir;
-    var ph = h - margem.topo - margem.base;
-    var folga = 0.06;
-    var lx = (caixa.x1 - caixa.x0) || 1;
-    var ly = (caixa.y1 - caixa.y0) || 1;
-    lx *= (1 + 2 * folga);
-    ly *= (1 + 2 * folga);
-    var cx = (caixa.x0 + caixa.x1) / 2;
-    var cy = (caixa.y0 + caixa.y1) / 2;
-    var escalaDados = Math.max(lx / pw, ly / ph);   // unidades por pixel
-    var semiX = escalaDados * pw / 2;
-    var semiY = escalaDados * ph / 2;
-    return global.Plot.escala({
-      w: w, h: h, margem: margem,
-      x0: cx - semiX, x1: cx + semiX,
-      y0: cy - semiY, y1: cy + semiY
-    });
-  }
-
   function desenharPrincipal(c) {
     var a = global.Plot.ajustar(el.canvas);
-    var esc = escalaIsometrica(a.w, a.h, { esq: 8, dir: 8, topo: 8, base: 8 }, recon.caixa);
+    var esc = global.Plot.escalaIsometrica({
+      w: a.w, h: a.h, margem: { esq: 8, dir: 8, topo: 8, base: 8 }, caixa: recon.caixa
+    });
     var ctx = a.ctx;
     var porUnidade = Math.abs(esc.px(1) - esc.px(0));
 

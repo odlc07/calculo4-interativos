@@ -108,11 +108,11 @@ li.falha .detalhe { color: var(--falhou); }
     <a href="convergencia.html">Convergência</a>
     <a href="epiciclos.html">Epiciclos</a>
   </nav>
-  <h1>Testes de <code>fourier.js</code>, <code>curvas.js</code> e <code>ondas.js</code></h1>
+  <h1>Testes dos módulos matemáticos</h1>
   <p class="subtitulo">
-    Asserções sobre os módulos puros — DFT, identidade de Parseval, ajuste
-    log-log, reparametrização por comprimento de arco, e as séries da triangular
-    e da quadrada. Nenhum acesso ao DOM dentro dos módulos testados; esta página
+    Asserções sobre os cinco módulos puros — DFT e Parseval, curvas e
+    reparametrização por arco, as séries da triangular e da quadrada, pontos
+    fixos e órbitas, e recorrências lineares com seu raio de convergência. Nenhum acesso ao DOM dentro dos módulos testados; esta página
     só desenha o resultado. A mesma suíte vive em <code>js/testes.js</code>.
     <br>Esta <strong>não</strong> é uma das páginas interativas — os módulos são
     <code>convergencia.html</code> e <code>epiciclos.html</code>.
@@ -130,6 +130,8 @@ li.falha .detalhe { color: var(--falhou); }
 <script src="js/fourier.js"></script>
 <script src="js/curvas.js"></script>
 <script src="js/ondas.js"></script>
+<script src="js/polinomios.js"></script>
+<script src="js/iteracao.js"></script>
 <script src="js/testes.js"></script>
 <script>
 (function () {
@@ -155,7 +157,7 @@ li.falha .detalhe { color: var(--falhou); }
       placar.className = 'placar' + (passaram === res.length ? '' : ' ruim');
       meta.textContent = ms.toFixed(0) + ' ms';
       document.title = (passaram === res.length ? '' : '[FALHOU] ') +
-                       'Testes — fourier.js e curvas.js';
+                       'Testes dos módulos matemáticos';
 
       var grupoAtual = null, lista = null;
       res.forEach(function (r) {

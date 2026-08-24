@@ -711,6 +711,323 @@
     return c.toLocaleString('pt-BR') + ' valores verificados';
   });
 
+  // =========================================================================
+  // 7. Módulo 4 — recorrência, função geratriz e raio de convergência
+  // =========================================================================
+
+  /* Os dois casos vêm de questões de prova e precisam sair exatos. Se estes
+   * falharem, o módulo está errado — nenhuma interface conserta isso. */
+  var CASOS_PROVA = [
+    { nome: 'seqrecursiva (P2)', alfa: [1, 1], c: [1, 2],
+      P: [1], Q: [1, -1, -2], raizes: [0.5, -1], R: 0.5, taxa: 2 },
+    { nome: 'seqrecursiva-2 (pré-P)', alfa: [1, 1], c: [2, 3],
+      P: [1, -1], Q: [1, -2, -3], raizes: [1 / 3, -1], R: 1 / 3, taxa: 3 }
+  ];
+
+  function vetorAprox(obtido, esperado, tol, rotulo) {
+    ok(obtido.length === esperado.length,
+       rotulo + ': esperava ' + esperado.length + ' entradas, veio ' + obtido.length +
+       ' (' + obtido.join(', ') + ')');
+    for (var i = 0; i < esperado.length; i++) {
+      aprox(obtido[i], esperado[i], tol, rotulo + '[' + i + ']');
+    }
+  }
+
+  teste('Geratriz', 'Os dois casos de prova saem exatos', function () {
+    var out = [];
+    CASOS_PROVA.forEach(function (caso) {
+      var a = global.Polinomios.analisar(caso.alfa, caso.c, 40);
+      vetorAprox(a.P, caso.P, 1e-12, caso.nome + ' — P');
+      vetorAprox(a.Q, caso.Q, 1e-12, caso.nome + ' — Q');
+
+      var mods = a.raizes.map(function (z) { return z.re; }).sort(function (x, y) { return x - y; });
+      var esp = caso.raizes.slice().sort(function (x, y) { return x - y; });
+      vetorAprox(mods, esp, 1e-12, caso.nome + ' — raízes');
+
+      aprox(a.R, caso.R, 1e-12, caso.nome + ' — R');
+      ok(a.dominante, caso.nome + ': deveria ter raiz dominante');
+      out.push(caso.nome + ': R = ' + a.R.toFixed(6));
+    });
+    return out.join('; ');
+  });
+
+  teste('Geratriz', 'A razão αₙ₊₁/αₙ converge para 1/R nos casos de prova', function () {
+    var out = [];
+    CASOS_PROVA.forEach(function (caso) {
+      var a = global.Polinomios.analisar(caso.alfa, caso.c, 55);
+      var ultima = a.razoes[a.razoes.length - 1];
+      num(ultima);
+      aprox(ultima, caso.taxa, 1e-9, caso.nome + ' — razão final vs 1/R');
+      aprox(a.taxa, caso.taxa, 1e-12, caso.nome + ' — 1/R');
+      out.push(caso.nome + ': ' + ultima.toFixed(9) + ' → ' + caso.taxa);
+    });
+    return out.join('; ');
+  });
+
+  teste('Geratriz', 'BigInt mantém os termos exatos onde Number já estourou', function () {
+    var a = global.Polinomios.analisar([1, 1], [1, 2], 60);
+    ok(a.exatos, 'esperava termos em BigInt para entradas inteiras');
+    // α_n satisfaz a recorrência exatamente, termo a termo
+    for (var n = 2; n < a.exatos.length; n++) {
+      var esperado = a.exatos[n - 1] + BigInt(2) * a.exatos[n - 2];
+      ok(a.exatos[n] === esperado, 'recorrência quebrou em n = ' + n);
+    }
+    var grande = a.exatos[a.exatos.length - 1];
+    ok(grande > BigInt(Number.MAX_SAFE_INTEGER),
+       'o teste precisa passar de 2^53 para ter graça: ' + grande);
+    // e a razão continua correta apesar do tamanho
+    aprox(a.razoes[a.razoes.length - 1], 2, 1e-12, 'razão no fim da sequência');
+    return 'α₆₀ = ' + grande.toString() + ' (' + grande.toString().length + ' dígitos)';
+  });
+
+  teste('Geratriz', 'Raízes complexas: Q = 1 + x² dá ±i, R = 1, sem raiz dominante',
+    function () {
+      var a = global.Polinomios.analisar([1, 1], [0, -1], 24);
+      vetorAprox(a.Q, [1, 0, 1], 1e-12, 'Q');
+      ok(a.raizes.length === 2, 'esperava 2 raízes');
+      a.raizes.forEach(function (z) {
+        abaixo(Math.abs(z.re), 1e-12, 'parte real de uma raiz de 1 + x²');
+        aprox(Math.abs(z.im), 1, 1e-12, 'parte imaginária');
+      });
+      aprox(a.R, 1, 1e-12, 'R');
+      ok(!a.dominante, 'módulos iguais deveriam desligar a raiz dominante');
+      ok(a.motivo === 'modulos-iguais', 'motivo veio "' + a.motivo + '"');
+      // a sequência é periódica e a razão oscila entre +1 e −1
+      var vistos = {};
+      a.razoes.forEach(function (r) { if (isFinite(r)) vistos[r.toFixed(6)] = true; });
+      var chaves = Object.keys(vistos).sort();
+      ok(chaves.length === 2, 'a razão deveria oscilar entre dois valores, veio ' + chaves.join(', '));
+      return 'raízes ±i, R = 1, razão oscila entre ' + chaves.join(' e ');
+    });
+
+  teste('Geratriz', 'Fibonacci: R = 1/φ e a razão tende a φ', function () {
+    var phi = (1 + Math.sqrt(5)) / 2;
+    var a = global.Polinomios.analisar([1, 1], [1, 1], 55);
+    vetorAprox(a.termos.slice(0, 8), [1, 1, 2, 3, 5, 8, 13, 21], 0, 'primeiros termos');
+    aprox(a.R, 1 / phi, 1e-12, 'R');
+    aprox(a.razoes[a.razoes.length - 1], phi, 1e-12, 'razão final');
+    return 'R = ' + a.R.toFixed(9) + ' = 1/φ, razão → ' + phi.toFixed(9);
+  });
+
+  teste('Geratriz', 'Sem raízes, f é polinômio e R = ∞ em vez de divisão por zero',
+    function () {
+      var a = global.Polinomios.analisar([1, 1], [0, 0], 12);
+      ok(a.raizes.length === 0, 'Q constante não deveria ter raízes');
+      ok(a.R === Infinity, 'R deveria ser ∞, veio ' + fmt(a.R));
+      ok(a.motivo === 'polinomio', 'motivo veio "' + a.motivo + '"');
+      vetorAprox(a.termos.slice(0, 5), [1, 1, 0, 0, 0], 0, 'termos');
+      return 'Q = ' + global.Polinomios.paraLatex(a.Q) + ', R = ∞';
+    });
+
+  teste('Geratriz', 'Grau 3 por Durand–Kerner devolve raízes de verdade', function () {
+    // Q = 1 - c1x - c2x² - c3x³ com raízes conhecidas por construção
+    var a = global.Polinomios.analisar([1, 0, 0], [0, 0, 1], 20);   // Q = 1 - x³
+    ok(a.raizes.length === 3, 'esperava 3 raízes, veio ' + a.raizes.length);
+    a.raizes.forEach(function (z, i) {
+      aprox(global.Polinomios.cMod(z), 1, 1e-9, 'módulo da raiz ' + i + ' de 1 − x³');
+    });
+    aprox(a.R, 1, 1e-9, 'R');
+    // cada raiz realmente anula Q
+    var pior = 0;
+    a.raizes.forEach(function (z) {
+      // Q(z) = 1 - z³
+      var z2 = { re: z.re * z.re - z.im * z.im, im: 2 * z.re * z.im };
+      var z3 = { re: z2.re * z.re - z2.im * z.im, im: z2.re * z.im + z2.im * z.re };
+      pior = Math.max(pior, Math.hypot(1 - z3.re, -z3.im));
+    });
+    abaixo(pior, 1e-9, 'resíduo |Q(z)| na pior raiz');
+    return '3 raízes de módulo 1, resíduo máximo ' + fmt(pior);
+  });
+
+  teste('Geratriz', 'O LaTeX sai em ordem crescente, como o enunciado escreve', function () {
+    var L = global.Polinomios.paraLatex;
+    ok(L([1, -1, -2]) === '1 - x - 2x^{2}', 'veio "' + L([1, -1, -2]) + '"');
+    ok(L([1, -1]) === '1 - x', 'veio "' + L([1, -1]) + '"');
+    ok(L([1]) === '1', 'veio "' + L([1]) + '"');
+    ok(L([0]) === '0', 'veio "' + L([0]) + '"');
+    return '1 - x - 2x^{2}, 1 - x, 1, 0';
+  });
+
+  // =========================================================================
+  // 8. Módulo 3 — iteração, pontos fixos e diagrama de teia
+  // =========================================================================
+
+  teste('Teia', 'Pontos fixos e classificação batem com os valores conhecidos', function () {
+    var esperado = {
+      raiz6: [{ x: 3, classe: 'atrator', dg: 1 / 6 }],
+      cos: [{ x: 0.7390851332, classe: 'atrator', dg: -0.6736120292 }],
+      quadrado: [{ x: 0, classe: 'atrator', dg: 0 }, { x: 1, classe: 'repulsor', dg: 2 }],
+      logistica32: [{ x: 0, classe: 'repulsor', dg: 3.2 }, { x: 0.6875, classe: 'repulsor', dg: -1.2 }],
+      logistica28: [{ x: 0, classe: 'repulsor', dg: 2.8 },
+                    { x: 9 / 14, classe: 'atrator', dg: -0.8 }]
+    };
+    var out = [];
+    global.Iteracao.FUNCOES.forEach(function (fn) {
+      var esp = esperado[fn.id];
+      ok(esp, 'sem expectativa registrada para ' + fn.id);
+      var achados = global.Iteracao.pontosFixos(fn);
+      ok(achados.length === esp.length,
+         fn.rotulo + ': esperava ' + esp.length + ' pontos fixos, achei ' + achados.length +
+         ' (' + achados.map(function (p) { return p.x.toFixed(4); }).join(', ') + ')');
+      for (var i = 0; i < esp.length; i++) {
+        aprox(achados[i].x, esp[i].x, 1e-8, fn.rotulo + ' — ponto fixo ' + i);
+        aprox(achados[i].dg, esp[i].dg, 1e-7, fn.rotulo + ' — g′ no ponto ' + i);
+        ok(achados[i].classe === esp[i].classe,
+           fn.rotulo + ' — ponto ' + achados[i].x.toFixed(4) + ': esperava ' +
+           esp[i].classe + ', veio ' + achados[i].classe);
+      }
+      out.push(fn.rotulo + ': ' + achados.map(function (p) {
+        return p.x.toFixed(4) + ' (' + p.classe + ')';
+      }).join(', '));
+    });
+    return out.join('; ');
+  });
+
+  teste('Teia', '|g′| = 1 é declarado inconclusivo, não chutado', function () {
+    var C = global.Iteracao.classificar;
+    ok(C(1) === 'inconclusivo', 'g′ = 1 veio ' + C(1));
+    ok(C(-1) === 'inconclusivo', 'g′ = −1 veio ' + C(-1));
+    ok(C(0.999999999999) === 'inconclusivo', 'quase 1 por baixo veio ' + C(0.999999999999));
+    ok(C(0.99) === 'atrator', 'g′ = 0,99 veio ' + C(0.99));
+    ok(C(1.01) === 'repulsor', 'g′ = 1,01 veio ' + C(1.01));
+    ok(C(Infinity) === 'inconclusivo', 'g′ infinita veio ' + C(Infinity));
+    return 'fronteira |g′| = 1 tratada como inconclusiva';
+  });
+
+  /* O ponto alto do módulo: −2 resolve a equação algébrica mas NÃO é ponto
+   * fixo de g, porque a raiz quadrada é não negativa. */
+  teste('Teia', '−2 é raiz da equação algébrica mas não é ponto fixo de √(6+x)',
+    function () {
+      var fn = global.Iteracao.porId('raiz6');
+      var alg = fn.algebrica;
+      ok(alg && alg.raizes.length === 2, 'faltou registrar as raízes algébricas');
+
+      // as duas raízes realmente resolvem x² − x − 6 = 0
+      alg.raizes.forEach(function (r) {
+        abaixo(Math.abs(r * r - r - 6), 1e-12, 'x² − x − 6 em x = ' + r);
+      });
+
+      // mas só 3 satisfaz g(x) = x
+      abaixo(Math.abs(fn.g(3) - 3), 1e-12, 'g(3) = 3');
+      var g2 = fn.g(-2);
+      aprox(g2, 2, 1e-12, 'g(−2)');
+      ok(Math.abs(g2 - (-2)) > 1, 'g(−2) deveria estar longe de −2, veio ' + fmt(g2));
+
+      // e −2 não aparece entre os pontos fixos encontrados numericamente
+      var achados = global.Iteracao.pontosFixos(fn);
+      achados.forEach(function (p) {
+        ok(Math.abs(p.x - (-2)) > 1e-3, '−2 apareceu como ponto fixo');
+      });
+      ok(alg.espurias.length === 1 && alg.espurias[0] === -2, 'faltou marcar −2 como espúria');
+      return 'g(−2) = ' + g2 + ' ≠ −2; pontos fixos achados: ' +
+             achados.map(function (p) { return p.x.toFixed(6); }).join(', ');
+    });
+
+  teste('Teia', '√(6+x): todo a₀ do domínio converge para 3 (critério de aceite 2)',
+    function () {
+      var fn = global.Iteracao.porId('raiz6');
+      var testados = 0, pior = 0;
+      for (var i = 0; i <= 60; i++) {
+        var a0 = -5.999 + (500 - (-5.999)) * i / 60;
+        var o = global.Iteracao.orbita(fn, a0, 200);
+        ok(o.parada !== 'escape', 'a₀ = ' + fmt(a0) + ' escapou');
+        var fim = o.valores[o.valores.length - 1];
+        num(fim);
+        pior = Math.max(pior, Math.abs(fim - 3));
+        testados++;
+      }
+      abaixo(pior, 1e-6, 'maior distância até 3 no fim da órbita');
+      return testados + ' valores iniciais, de −5,999 a 500; pior desvio de 3: ' + fmt(pior);
+    });
+
+  teste('Teia', 'a₀ < −6 devolve mensagem de domínio, não NaN (critério de aceite 2)',
+    function () {
+      var fn = global.Iteracao.porId('raiz6');
+      var out = [];
+      [-6, -6.5, -100, -1e9].forEach(function (a0) {
+        var o = global.Iteracao.orbita(fn, a0, 20);
+        ok(o.parada === 'dominio', 'a₀ = ' + a0 + ': parada veio "' + o.parada + '"');
+        ok(o.mensagem.length > 0, 'faltou mensagem para a₀ = ' + a0);
+        o.valores.forEach(function (v) { num(v); });
+        out.push(String(a0));
+      });
+      return 'a₀ ∈ {' + out.join(', ') + '} → "' +
+             global.Iteracao.orbita(fn, -7, 5).mensagem + '"';
+    });
+
+  teste('Teia', 'x²: o destino depende de a₀, e a divergência é detectada', function () {
+    var fn = global.Iteracao.porId('quadrado');
+    var dentro = global.Iteracao.orbita(fn, 0.9, 400);
+    abaixo(Math.abs(dentro.valores[dentro.valores.length - 1]), 1e-6, 'a₀ = 0,9 deveria ir a 0');
+
+    var fora = global.Iteracao.orbita(fn, 1.1, 400);
+    ok(fora.parada === 'escape', 'a₀ = 1,1 deveria escapar, parada veio "' + fora.parada + '"');
+    fora.valores.forEach(function (v) { num(v); });
+    ok(Math.abs(fora.valores[fora.valores.length - 1]) > global.Iteracao.LIMITE_ESCAPE,
+       'o último valor deveria ter passado do limite de escape');
+
+    var fixo = global.Iteracao.orbita(fn, 1, 50);
+    ok(fixo.parada === 'fixo', 'a₀ = 1 é ponto fixo; parada veio "' + fixo.parada + '"');
+    return 'a₀ = 0,9 → 0; a₀ = 1 fica; a₀ = 1,1 diverge ("' + fora.mensagem + '")';
+  });
+
+  teste('Teia', 'Logística r=3,2 cai em ciclo de período 2 (critério de aceite 4)',
+    function () {
+      var f32 = global.Iteracao.porId('logistica32');
+      var o32 = global.Iteracao.orbita(f32, 0.2, 400);
+      var p32 = global.Iteracao.periodo(o32.valores);
+      ok(p32 === 2, 'esperava período 2 em r = 3,2, veio ' + p32);
+
+      var f28 = global.Iteracao.porId('logistica28');
+      var o28 = global.Iteracao.orbita(f28, 0.2, 400);
+      var p28 = global.Iteracao.periodo(o28.valores);
+      ok(p28 === 1 || o28.parada === 'fixo',
+         'esperava convergência para ponto fixo em r = 2,8, período veio ' + p28);
+
+      var fim = o32.valores.slice(-2);
+      return 'r=3,2: ciclo de período ' + p32 + ' entre ' +
+             fim[0].toFixed(6) + ' e ' + fim[1].toFixed(6) +
+             '; r=2,8: converge para ' + o28.valores[o28.valores.length - 1].toFixed(6);
+    });
+
+  teste('Teia', 'A teia não desenha segmentos degenerados sobre o ponto fixo', function () {
+    var fn = global.Iteracao.porId('raiz6');
+    var o = global.Iteracao.orbita(fn, 0, 200);
+    var todos = global.Iteracao.segmentosTeia(o.valores, fn, 0);
+    var podados = global.Iteracao.segmentosTeia(o.valores, fn, 1e-4);
+    ok(podados.length < todos.length, 'a poda não removeu nada');
+    ok(podados.length > 4, 'a poda removeu demais: sobraram ' + podados.length);
+    podados.forEach(function (s) {
+      num(s.x0); num(s.y0); num(s.x1); num(s.y1);
+      var comp = Math.hypot(s.x1 - s.x0, s.y1 - s.y0);
+      ok(comp >= 1e-4 - 1e-12, 'sobrou segmento de comprimento ' + fmt(comp));
+    });
+    return todos.length + ' segmentos sem poda → ' + podados.length + ' com poda de 1e-4';
+  });
+
+  teste('Teia', 'Nenhum NaN ou Infinity em nenhum caminho das cinco funções',
+    function () {
+      var contados = 0;
+      global.Iteracao.FUNCOES.forEach(function (fn) {
+        var jan = fn.janela;
+        for (var i = 0; i <= 80; i++) {
+          var a0 = jan.x0 + (jan.x1 - jan.x0) * i / 80;
+          var o = global.Iteracao.orbita(fn, a0, 60);
+          ok(['ok', 'dominio', 'escape', 'fixo'].indexOf(o.parada) >= 0,
+             'parada desconhecida: ' + o.parada);
+          o.valores.forEach(function (v) { num(v); contados++; });
+          global.Iteracao.segmentosTeia(o.valores, fn, 1e-6).forEach(function (s) {
+            num(s.x0); num(s.y0); num(s.x1); num(s.y1);
+            contados += 4;
+          });
+        }
+        global.Iteracao.pontosFixos(fn).forEach(function (p) {
+          num(p.x); num(p.dg); contados += 2;
+        });
+      });
+      return contados.toLocaleString('pt-BR') + ' valores verificados';
+    });
+
   // ---- execução ------------------------------------------------------------
   function executar() {
     return casos.map(function (c) {

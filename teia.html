@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="description" content="Diagrama de teia para sequências recursivas: pontos fixos, classificação por |g′(p)| e o limite que não depende do valor inicial.">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Diagrama de teia: sequências recursivas — Cálculo 4</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2032%2032%22%3E%3Ccircle%20cx%3D%2213%22%20cy%3D%2216%22%20r%3D%229%22%20fill%3D%22none%22%20stroke%3D%22%2316606e%22%20stroke-width%3D%222%22%2F%3E%3Ccircle%20cx%3D%2222%22%20cy%3D%2216%22%20r%3D%224.5%22%20fill%3D%22none%22%20stroke%3D%22%239aa0a4%22%20stroke-width%3D%221.6%22%2F%3E%3Ccircle%20cx%3D%2226.5%22%20cy%3D%2216%22%20r%3D%222.6%22%20fill%3D%22%2316606e%22%2F%3E%3C%2Fsvg%3E">
+<link rel="stylesheet" href="vendor/katex/katex.min.css">
+<link rel="stylesheet" href="css/base.css">
+</head>
+<body>
+<div class="pagina">
+
+  <nav class="navegacao" aria-label="Seções do site">
+    <span class="marca-site">Módulos Interativos — Cálculo 4 (SMA0356)</span>
+    <a href="index.html">Início</a>
+    <a href="teoria.html">Teoria</a>
+    <a href="convergencia.html">Convergência</a>
+    <a href="epiciclos.html">Epiciclos</a>
+    <a href="teia.html" aria-current="page">Teia</a>
+    <a href="geratriz.html">Geratriz</a>
+  </nav>
+
+  <header class="cabecalho">
+    <p class="disciplina">Módulo 3</p>
+    <h1>Diagrama de teia: sequências recursivas</h1>
+  </header>
+
+  <p class="crenca-falsa">
+    <span class="crenca-rotulo">A crença que este módulo desfaz</span>
+    “O limite de uma sequência recursiva depende do valor inicial.”
+  </p>
+
+  <div class="introducao">
+    <p>
+      Dada <span class="math" data-math="g"></span> e um valor inicial
+      <span class="math" data-math="a_0"></span>, a sequência é
+      <span class="math" data-math="a_{n+1}=g(a_n)"></span>. O diagrama de teia desenha
+      <span class="math" data-math="y=g(x)"></span> e a reta
+      <span class="math" data-math="y=x"></span>, e alterna: de
+      <span class="math" data-math="(a_n,a_n)"></span> sobe verticalmente até a curva, e de lá
+      caminha horizontalmente até a diagonal, onde recomeça.
+    </p>
+    <p>
+      Pontos fixos são as interseções das duas curvas. A classificação local sai de
+      <span class="math" data-math="|g'(p)|"></span>: menor que 1 atrai, maior que 1 repele, e
+      igual a 1 é <span class="destaque-texto">inconclusivo</span> pelo critério de primeira
+      ordem — caso em que esta página diz “inconclusivo” em vez de chutar.
+    </p>
+    <p>
+      <strong>Arraste o marcador <span class="math" data-math="a_0"></span> pelo eixo horizontal.</strong>
+      Em <span class="math" data-math="\sqrt{6+x}"></span>, percorra o domínio inteiro e olhe o
+      indicador de limite: ele não se move. É a resposta da questão, obtida sem conta nenhuma.
+    </p>
+  </div>
+
+  <h2>Controles</h2>
+
+  <div class="controles">
+    <div class="seletor" id="seletor-funcao" role="group" aria-label="Escolha da função g"></div>
+  </div>
+
+  <div class="controles">
+    <div class="campo">
+      <label for="campo-a0"><span class="math" data-math="a_0"></span></label>
+      <input type="number" id="campo-a0" step="0.1" value="0">
+      <span class="valor-controle" id="valor-a0">0</span>
+    </div>
+    <div class="controle">
+      <label for="slider-iteracoes">Iterações</label>
+      <input type="range" id="slider-iteracoes" min="1" max="40" value="12" step="1">
+      <span class="valor-controle" id="valor-iteracoes">12</span>
+    </div>
+    <button type="button" id="botao-animar" aria-pressed="false">animar</button>
+    <div class="opcao" id="opcao-espuria">
+      <input type="checkbox" id="check-espuria" checked>
+      <label for="check-espuria">marcar a raiz espúria</label>
+    </div>
+  </div>
+
+  <p class="nota">
+    O marcador aceita arraste com o mouse e também as setas do teclado, com o canvas em foco.
+    Digitar no campo funciona igual.
+  </p>
+
+  <div class="paineis">
+
+    <section class="quadro">
+      <div class="painel-cabeca">
+        <h3>Diagrama de teia</h3>
+      </div>
+      <canvas id="canvas-teia" class="canvas-teia" tabindex="0"
+              aria-label="Diagrama de teia: a curva y = g(x) em cinza, a diagonal y = x tracejada, e a órbita alternando segmentos verticais e horizontais em azul. Pontos fixos atratores aparecem preenchidos e repulsores vazados. Use as setas para mover o valor inicial."></canvas>
+      <div class="legenda">
+        <span><i class="amostra exata"></i>y = g(x)</span>
+        <span><i class="amostra serie"></i>órbita</span>
+        <span><i class="amostra limite"></i>repulsor / raiz espúria</span>
+      </div>
+
+      <p class="nota" id="nota-funcao"></p>
+
+      <div class="indicadores">
+        <div class="indicador">
+          <span class="rotulo">para onde a órbita vai</span>
+          <span class="numero" id="ind-limite">—</span>
+          <span class="apoio" id="ind-limite-apoio">—</span>
+        </div>
+      </div>
+
+      <p class="subtitulo-grafico">Pontos fixos na janela</p>
+      <ul class="lista-fixos" id="lista-fixos"></ul>
+    </section>
+
+    <section class="quadro">
+      <div class="painel-cabeca">
+        <h3>A sequência <span class="math" data-math="a_n"></span> contra <span class="math" data-math="n"></span></h3>
+      </div>
+      <canvas id="canvas-sequencia" class="canvas-sequencia"
+              aria-label="Gráfico dos termos da sequência contra o índice n, com linha horizontal tracejada no valor limite."></canvas>
+      <div class="legenda">
+        <span><i class="amostra serie"></i>aₙ</span>
+        <span><i class="amostra limite"></i>valor de acumulação</span>
+      </div>
+      <p class="nota">
+        É este gráfico que liga a teia à ideia de <span class="math" data-math="\lim a_n"></span>.
+        Sem ele o diagrama vira desenho bonito e o aluno não faz a conexão com a sequência.
+      </p>
+    </section>
+
+  </div>
+
+  <div id="bloco-espuria">
+    <h2>A raiz que a álgebra produz e a função rejeita</h2>
+
+    <div class="introducao">
+      <p>
+        Resolver <span class="math" data-math="\sqrt{6+x}=x"></span> elevando ao quadrado dá:
+      </p>
+      <div class="formula" id="equacao-espuria" data-math-display=""></div>
+      <p id="texto-espuria"></p>
+      <p>
+        No gráfico, <span class="math" data-math="-2"></span> está marcado com um
+        <strong>×</strong> sobre a diagonal — onde o ponto fixo estaria se existisse — e o
+        traço pontilhado mede o vão até o valor que <span class="math" data-math="g"></span>
+        realmente assume ali. É esse vão que mostra que as duas curvas
+        <span class="destaque-texto">não se cruzam</span> em
+        <span class="math" data-math="x=-2"></span>. Elevar ao quadrado não preserva sinal, e
+        por isso pode inventar soluções: toda raiz obtida assim precisa ser conferida na
+        equação original.
+      </p>
+    </div>
+  </div>
+
+  <footer class="rodape">
+    <p>
+      Os enunciados completos e a notação da disciplina estão em
+      <a href="teoria.html">Teoria</a>. As derivadas são analíticas, não por diferença finita:
+      o ruído numérico atrapalharia justamente a classificação perto de
+      <span class="math" data-math="|g'|=1"></span>.
+    </p>
+  </footer>
+
+</div>
+
+<script src="vendor/katex/katex.min.js"></script>
+<script src="js/formulas.js"></script>
+<script src="js/iteracao.js"></script>
+<script src="js/plot.js"></script>
+<script src="js/teia.js"></script>
+</body>
+</html>

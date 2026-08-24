@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="description" content="Da recorrência linear ao raio de convergência: a função geratriz é racional, e o raio é a distância até a singularidade complexa mais próxima.">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Da recorrência ao raio de convergência — Cálculo 4</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2032%2032%22%3E%3Ccircle%20cx%3D%2213%22%20cy%3D%2216%22%20r%3D%229%22%20fill%3D%22none%22%20stroke%3D%22%2316606e%22%20stroke-width%3D%222%22%2F%3E%3Ccircle%20cx%3D%2222%22%20cy%3D%2216%22%20r%3D%224.5%22%20fill%3D%22none%22%20stroke%3D%22%239aa0a4%22%20stroke-width%3D%221.6%22%2F%3E%3Ccircle%20cx%3D%2226.5%22%20cy%3D%2216%22%20r%3D%222.6%22%20fill%3D%22%2316606e%22%2F%3E%3C%2Fsvg%3E">
+<link rel="stylesheet" href="vendor/katex/katex.min.css">
+<link rel="stylesheet" href="css/base.css">
+</head>
+<body>
+<div class="pagina">
+
+  <nav class="navegacao" aria-label="Seções do site">
+    <span class="marca-site">Módulos Interativos — Cálculo 4 (SMA0356)</span>
+    <a href="index.html">Início</a>
+    <a href="teoria.html">Teoria</a>
+    <a href="convergencia.html">Convergência</a>
+    <a href="epiciclos.html">Epiciclos</a>
+    <a href="teia.html">Teia</a>
+    <a href="geratriz.html" aria-current="page">Geratriz</a>
+  </nav>
+
+  <header class="cabecalho">
+    <p class="disciplina">Módulo 4</p>
+    <h1>Da recorrência ao raio de convergência</h1>
+  </header>
+
+  <p class="crenca-falsa">
+    <span class="crenca-rotulo">A crença que este módulo desfaz</span>
+    “Raio de convergência é o número que sai do teste da razão, e não significa mais nada.”
+  </p>
+
+  <div class="introducao">
+    <p>
+      Uma recorrência linear tem função geratriz <span class="destaque-texto">racional</span>.
+      Escrevendo <span class="math" data-math="f(x)=\sum_{n\ge0}\alpha_n x^{n}"></span> e
+      multiplicando por <span class="math" data-math="Q(x)=1-c_1x-c_2x^{2}"></span>, todo
+      coeficiente de <span class="math" data-math="x^{m}"></span> com
+      <span class="math" data-math="m\ge 2"></span> se anula — é exatamente a recorrência — e
+      sobra um numerador de grau baixo.
+    </p>
+    <p>
+      O raio de convergência é então <span class="math" data-math="R=\min\{|z| : Q(z)=0\}"></span>:
+      a <span class="destaque-texto">distância da origem até a singularidade complexa mais
+      próxima</span> de <span class="math" data-math="f"></span>. E essa mesma singularidade
+      controla a velocidade com que a sequência cresce. É por isso que o número do teste da
+      razão significa muito mais que um número.
+    </p>
+    <p>
+      Nos dois exemplos de prova aparece uma raiz em <span class="math" data-math="-1"></span>
+      que <em>não</em> determina o raio, porque está mais longe da origem que a outra. Repare
+      nela no plano complexo: é o mal-entendido que este módulo existe para desfazer.
+    </p>
+  </div>
+
+  <h2>Controles</h2>
+
+  <div class="controles">
+    <div class="seletor" id="exemplos" role="group" aria-label="Exemplos pré-carregados"></div>
+  </div>
+
+  <div class="controles">
+    <div class="seletor" id="seletor-ordem" role="group" aria-label="Ordem da recorrência"></div>
+    <div class="campos">
+      <span class="campo">
+        <label for="campo-a0"><span class="math" data-math="\alpha_0"></span></label>
+        <input type="number" id="campo-a0" step="1" value="1">
+      </span>
+      <span class="campo">
+        <label for="campo-a1"><span class="math" data-math="\alpha_1"></span></label>
+        <input type="number" id="campo-a1" step="1" value="1">
+      </span>
+      <span class="campo">
+        <label for="campo-c1"><span class="math" data-math="c_1"></span></label>
+        <input type="number" id="campo-c1" step="1" value="1">
+      </span>
+      <span class="campo">
+        <label for="campo-c2"><span class="math" data-math="c_2"></span></label>
+        <input type="number" id="campo-c2" step="1" value="2">
+      </span>
+    </div>
+    <div class="campos" id="linha-ordem-3" hidden>
+      <span class="campo">
+        <label for="campo-a2"><span class="math" data-math="\alpha_2"></span></label>
+        <input type="number" id="campo-a2" step="1" value="0">
+      </span>
+      <span class="campo">
+        <label for="campo-c3"><span class="math" data-math="c_3"></span></label>
+        <input type="number" id="campo-c3" step="1" value="0">
+      </span>
+    </div>
+  </div>
+
+  <p class="nota">
+    A recorrência é <span class="math" data-math="\alpha_{n+k}=c_1\alpha_{n+k-1}+\dots+c_k\alpha_n"></span>.
+    Os termos são calculados com inteiros de precisão arbitrária, porque
+    <span class="math" data-math="\alpha_n"></span> cresce como
+    <span class="math" data-math="(1/R)^{n}"></span> e estoura a precisão comum em poucas dezenas
+    de passos.
+  </p>
+
+  <h2>A forma racional</h2>
+
+  <div class="quadro">
+    <div class="formula" id="forma-racional" data-math-display=""></div>
+    <p class="subtitulo-grafico">A derivação, em três linhas</p>
+    <div class="formula" id="derivacao-1" data-math-display=""></div>
+    <div class="formula" id="derivacao-2" data-math-display=""></div>
+    <div class="formula" id="derivacao-3" data-math-display=""></div>
+    <ol class="termos" id="termos" aria-label="Primeiros termos da sequência"></ol>
+  </div>
+
+  <h2>Onde está a singularidade, e o que ela faz</h2>
+
+  <div class="paineis">
+
+    <section class="quadro">
+      <div class="painel-cabeca">
+        <h3>Plano complexo</h3>
+      </div>
+      <canvas id="canvas-plano" class="canvas-plano"
+              aria-label="Plano complexo com as raízes do denominador Q como pontos e o disco de convergência de raio R centrado na origem. A raiz de menor módulo, que determina o raio, aparece destacada."></canvas>
+      <div class="legenda">
+        <span><i class="amostra serie"></i>disco de raio R</span>
+        <span><i class="amostra limite"></i>raiz que determina R</span>
+      </div>
+
+      <div class="indicadores">
+        <div class="indicador">
+          <span class="rotulo">raio de convergência</span>
+          <span class="numero" id="ind-raio">—</span>
+          <span class="apoio" id="ind-raio-apoio">—</span>
+        </div>
+        <div class="indicador">
+          <span class="rotulo">raízes de Q</span>
+          <span class="numero texto" id="ind-raizes">—</span>
+          <span class="apoio" id="ind-raizes-apoio">—</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="quadro">
+      <div class="painel-cabeca">
+        <h3>Crescimento da sequência</h3>
+      </div>
+      <canvas id="canvas-crescimento" class="canvas-crescimento"
+              aria-label="Gráfico da razão entre termos consecutivos da sequência contra n, com uma linha horizontal tracejada no valor 1 sobre R quando existe raiz dominante."></canvas>
+      <div class="legenda">
+        <span><i class="amostra serie"></i>αₙ₊₁/αₙ</span>
+        <span><i class="amostra limite"></i>1/R</span>
+      </div>
+
+      <p class="aviso-inline" id="aviso-dominante" hidden>
+        As duas raízes têm o mesmo módulo, então não há raiz dominante: a razão
+        <span class="math" data-math="\alpha_{n+1}/\alpha_n"></span> oscila e
+        <strong>não converge</strong>, embora <span class="math" data-math="R"></span> continue
+        perfeitamente bem definido. Por isso não há linha de limite desenhada aqui.
+      </p>
+
+      <div class="indicadores">
+        <div class="indicador">
+          <span class="rotulo">taxa de crescimento</span>
+          <span class="numero" id="ind-taxa">—</span>
+          <span class="apoio" id="ind-taxa-apoio">—</span>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <h2>Por que isto importa</h2>
+
+  <div class="introducao">
+    <p>
+      <strong>O polo mais próximo não é tecnicalidade do teste da razão: é a taxa de crescimento
+      da sequência.</strong> Nos dois exemplos de prova a razão
+      <span class="math" data-math="\alpha_{n+1}/\alpha_n"></span> converge para
+      <span class="math" data-math="2"></span> e para <span class="math" data-math="3"></span> —
+      que são exatamente <span class="math" data-math="1/R"></span> com
+      <span class="math" data-math="R=1/2"></span> e <span class="math" data-math="R=1/3"></span>.
+      A singularidade em <span class="math" data-math="-1"></span> existe nos dois casos e não
+      governa nada, por estar mais longe.
+    </p>
+    <p>
+      <strong>O limite pode não existir sem que o raio deixe de existir.</strong> Escolha o
+      exemplo periódico: <span class="math" data-math="Q=1+x^{2}"></span> tem raízes
+      <span class="math" data-math="\pm i"></span>, ambas de módulo 1. O raio é
+      <span class="math" data-math="R=1"></span>, mas nenhuma raiz domina, e a razão fica
+      oscilando entre <span class="math" data-math="+1"></span> e
+      <span class="math" data-math="-1"></span> para sempre. A página detecta isso sozinha e não
+      desenha reta de limite nenhuma.
+    </p>
+    <p>
+      Esta é a versão discreta de um fato que aparece também em
+      <a href="epiciclos.html">Epiciclos</a>: lá, curvas <em>analíticas</em> têm coeficientes de
+      Fourier que decaem exponencialmente, porque a singularidade complexa mais próxima está a uma
+      distância positiva. Aqui, essa mesma distância é o raio de convergência. Nos dois casos é a
+      geometria no plano complexo que dita a velocidade — de decaimento lá, de crescimento aqui.
+    </p>
+  </div>
+
+  <footer class="rodape">
+    <p>
+      Os enunciados completos e a notação da disciplina estão em
+      <a href="teoria.html">Teoria</a>. As raízes de <span class="math" data-math="Q"></span> são
+      calculadas em forma fechada para grau 2 e por Durand–Kerner para grau 3.
+    </p>
+  </footer>
+
+</div>
+
+<script src="vendor/katex/katex.min.js"></script>
+<script src="js/formulas.js"></script>
+<script src="js/polinomios.js"></script>
+<script src="js/plot.js"></script>
+<script src="js/geratriz.js"></script>
+</body>
+</html>

@@ -60,6 +60,80 @@
     };
   }
 
+  /* Inverso de px/py: de pixel para coordenada de dados. É o que permite
+   * arrastar um marcador sobre o canvas e saber que valor ele representa. */
+  function inverterX(esc, px) {
+    return esc.x0 + (px - esc.margem.esq) * (esc.x1 - esc.x0) / esc.pw;
+  }
+  function inverterY(esc, py) {
+    return esc.y1 - (py - esc.margem.topo) * (esc.y1 - esc.y0) / esc.ph;
+  }
+
+  /* Escala isométrica: expande o domínio menor até que uma unidade em x meça o
+   * mesmo que uma unidade em y. Sem isso o círculo sai elipse — o que estraga
+   * tanto a cadeia de epiciclos quanto o disco de convergência no plano
+   * complexo. Recebe a caixa dos dados { x0, x1, y0, y1 } e a folga relativa. */
+  function escalaIsometrica(cfg) {
+    var m = cfg.margem;
+    var pw = cfg.w - m.esq - m.dir;
+    var ph = cfg.h - m.topo - m.base;
+    var folga = cfg.folga === undefined ? 0.06 : cfg.folga;
+    var caixa = cfg.caixa;
+
+    var lx = ((caixa.x1 - caixa.x0) || 1) * (1 + 2 * folga);
+    var ly = ((caixa.y1 - caixa.y0) || 1) * (1 + 2 * folga);
+    var cx = (caixa.x0 + caixa.x1) / 2;
+    var cy = (caixa.y0 + caixa.y1) / 2;
+
+    var porPixel = Math.max(lx / pw, ly / ph);
+    var semiX = porPixel * pw / 2;
+    var semiY = porPixel * ph / 2;
+
+    return escala({
+      w: cfg.w, h: cfg.h, margem: m,
+      x0: cx - semiX, x1: cx + semiX,
+      y0: cy - semiY, y1: cy + semiY
+    });
+  }
+
+  /* Círculo em coordenadas de dados. Só faz sentido sob escala isométrica —
+   * o raio é convertido pela escala horizontal. */
+  function circulo(ctx, esc, cx, cy, raio, opcoes) {
+    var o = opcoes || {};
+    if (!isFinite(cx) || !isFinite(cy) || !isFinite(raio) || raio <= 0) return;
+    var r = Math.abs(esc.px(cx + raio) - esc.px(cx));
+    if (!(r > 0) || r > 1e5) return;
+    ctx.save();
+    ctx.beginPath();
+    ctx.arc(esc.px(cx), esc.py(cy), r, 0, 2 * Math.PI);
+    if (o.preenchimento) {
+      ctx.fillStyle = o.preenchimento;
+      if (o.alpha !== undefined) ctx.globalAlpha = o.alpha;
+      ctx.fill();
+      ctx.globalAlpha = 1;
+    }
+    if (o.cor) {
+      ctx.strokeStyle = o.cor;
+      ctx.lineWidth = o.largura || 1;
+      if (o.tracejado) ctx.setLineDash(o.tracejado);
+      ctx.stroke();
+    }
+    ctx.restore();
+  }
+
+  /* Rótulo curto ancorado num ponto de dados. */
+  function rotulo(ctx, esc, x, y, texto, opcoes) {
+    var o = opcoes || {};
+    if (!isFinite(x) || !isFinite(y)) return;
+    ctx.save();
+    ctx.fillStyle = o.cor;
+    ctx.font = (o.tamanho || 11) + 'px ' + (o.fonte || 'system-ui, sans-serif');
+    ctx.textAlign = o.alinhamento || 'left';
+    ctx.textBaseline = o.base || 'bottom';
+    ctx.fillText(texto, esc.px(x) + (o.dx || 0), esc.py(y) + (o.dy || 0));
+    ctx.restore();
+  }
+
   /* Grade e eixos. marcasX / marcasY: [{ v, rotulo }]. */
   function eixos(ctx, esc, c, opcoes) {
     var o = opcoes || {};
@@ -233,6 +307,11 @@
     ajustar: ajustar,
     cores: cores,
     escala: escala,
+    escalaIsometrica: escalaIsometrica,
+    inverterX: inverterX,
+    inverterY: inverterY,
+    circulo: circulo,
+    rotulo: rotulo,
     eixos: eixos,
     funcao: funcao,
     serie: serie,

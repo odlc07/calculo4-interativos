@@ -109,10 +109,78 @@
     global.Plot.ponto(a.ctx, esc, px, py, { cor: c.destaque, raio: 3 });
   }
 
+  // ---- miniatura do módulo 3: teia convergindo para o ponto fixo -----------
+  function miniaturaTeia(c) {
+    var a = global.Plot.ajustar(el.miniTeia);
+    var fn = global.Iteracao.porId('raiz6');
+    var esc = global.Plot.escala({
+      w: a.w, h: a.h, margem: MARGEM,
+      x0: -1, x1: 6.5, y0: -1, y1: 6.5
+    });
+
+    // diagonal y = x
+    global.Plot.serie(a.ctx, esc, [esc.x0, esc.x1], [esc.x0, esc.x1],
+                      { cor: c.eixo, largura: 1, tracejado: [3, 3] });
+
+    // y = g(x)
+    global.Plot.funcao(a.ctx, esc, function (x) {
+      return global.Iteracao.noDominio(fn, x) ? fn.g(x) : NaN;
+    }, { cor: c.referencia, largura: 1.4, n: 300 });
+
+    // a teia a partir de um a₀ bem longe do ponto fixo
+    var o = global.Iteracao.orbita(fn, 6.2, 14);
+    var segs = global.Iteracao.segmentosTeia(o.valores, fn,
+                 (esc.x1 - esc.x0) / Math.max(esc.pw, 1));
+    a.ctx.save();
+    a.ctx.strokeStyle = c.destaque;
+    a.ctx.lineWidth = 1.4;
+    a.ctx.beginPath();
+    for (var i = 0; i < segs.length; i++) {
+      a.ctx.moveTo(esc.px(segs[i].x0), esc.py(segs[i].y0));
+      a.ctx.lineTo(esc.px(segs[i].x1), esc.py(segs[i].y1));
+    }
+    a.ctx.stroke();
+    a.ctx.restore();
+
+    global.Plot.ponto(a.ctx, esc, 3, 3, { cor: c.destaque, raio: 4 });
+  }
+
+  // ---- miniatura do módulo 4: disco de convergência no plano complexo ------
+  function miniaturaGeratriz(c) {
+    var a = global.Plot.ajustar(el.miniGer);
+    var an = global.Polinomios.analisar([1, 1], [1, 2], 10);   // o caso da P2
+
+    var lado = Math.min(a.w, a.h);
+    var esc = global.Plot.escalaIsometrica({
+      w: a.w, h: a.h,
+      margem: {
+        esq: (a.w - lado) / 2 + 8, dir: (a.w - lado) / 2 + 8,
+        topo: (a.h - lado) / 2 + 8, base: (a.h - lado) / 2 + 8
+      },
+      caixa: { x0: -1.3, x1: 1.3, y0: -1.3, y1: 1.3 }, folga: 0.02
+    });
+
+    // eixos discretos
+    global.Plot.eixos(a.ctx, esc, c, { marcasX: [{ v: 0 }], marcasY: [{ v: 0 }] });
+
+    // o disco de raio R, e as duas raízes
+    global.Plot.circulo(a.ctx, esc, 0, 0, an.R, {
+      preenchimento: c.destaque, alpha: 0.1, cor: c.destaque, largura: 1.5
+    });
+    an.raizes.forEach(function (z, i) {
+      var minima = (i === an.indiceMinima);
+      global.Plot.ponto(a.ctx, esc, z.re, z.im, {
+        cor: minima ? c.limite : c.referencia, raio: minima ? 4.5 : 3
+      });
+    });
+  }
+
   function desenhar() {
     var c = global.Plot.cores(document.body);
     if (el.miniConv) miniaturaConvergencia(c);
     if (el.miniEpi) miniaturaEpiciclos(c);
+    if (el.miniTeia) miniaturaTeia(c);
+    if (el.miniGer) miniaturaGeratriz(c);
   }
 
   function agendar() {
@@ -124,6 +192,8 @@
   function iniciar() {
     el.miniConv = document.getElementById('mini-convergencia');
     el.miniEpi = document.getElementById('mini-epiciclos');
+    el.miniTeia = document.getElementById('mini-teia');
+    el.miniGer = document.getElementById('mini-geratriz');
     global.Formulas.renderizar();
     global.addEventListener('resize', agendar);
     agendar();

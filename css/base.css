@@ -362,6 +362,126 @@ canvas:focus-visible { outline: 2px solid var(--destaque); outline-offset: 2px; 
 .legenda .amostra.limite { border-top-color: var(--grafico-limite); border-top-style: dashed; }
 .legenda .amostra.corte  { border-top-color: var(--destaque); border-top-style: dashed; }
 
+/* ---- crença falsa (módulos 3 e 4) --------------------------------------- */
+
+/* Estes dois módulos abrem enunciando o mal-entendido que vêm desfazer. Fica
+   em citação, com um filete à esquerda, para se ler como voz alheia — não como
+   afirmação da página. */
+.crenca-falsa {
+  max-width: var(--medida);
+  margin: 0 0 var(--e5);
+  padding: var(--e3) 0 var(--e3) var(--e4);
+  border-left: 3px solid var(--grafico-limite);
+  font-size: 1.05rem;
+  font-style: italic;
+  color: var(--tinta-media);
+}
+.crenca-rotulo {
+  display: block;
+  font-family: var(--sans);
+  font-size: .66rem;
+  font-weight: 600;
+  font-style: normal;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--grafico-limite);
+  margin-bottom: var(--e2);
+}
+
+.aviso-inline {
+  margin: var(--e4) 0 0;
+  padding: var(--e3);
+  border-left: 3px solid var(--grafico-limite);
+  background: var(--fundo);
+  font-size: .88rem;
+  line-height: 1.55;
+  color: var(--tinta-media);
+}
+
+/* ---- campos numéricos --------------------------------------------------- */
+
+.campos { display: flex; flex-wrap: wrap; gap: var(--e3) var(--e4); align-items: center; }
+.campo { display: flex; align-items: center; gap: var(--e2); }
+.campo label { font-family: var(--sans); font-size: .85rem; font-weight: 600; }
+input[type="number"] {
+  width: 4.5rem;
+  font: inherit;
+  font-family: var(--sans);
+  font-size: .9rem;
+  font-variant-numeric: tabular-nums;
+  padding: var(--e1) var(--e2);
+  color: var(--tinta);
+  background: var(--papel);
+  border: 1px solid var(--linha-forte);
+  border-radius: 2px;
+}
+input[type="number"]:focus-visible { outline: 2px solid var(--destaque); outline-offset: 2px; }
+
+.canvas-plano       { height: 320px; }
+.canvas-crescimento { height: 320px; }
+.canvas-teia        { height: 380px; }
+.canvas-sequencia   { height: 200px; }
+@media (max-width: 720px) {
+  .canvas-plano, .canvas-crescimento { height: 270px; }
+  .canvas-teia { height: 320px; }
+}
+
+/* ---- termos da sequência ------------------------------------------------ */
+
+.termos {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(6.5rem, 1fr));
+  gap: var(--e1) var(--e4);
+  list-style: none;
+  margin: var(--e5) 0 0;
+  padding: var(--e3) 0 0;
+  border-top: 1px solid var(--linha);
+}
+.termos li {
+  display: flex;
+  align-items: baseline;
+  gap: var(--e2);
+  font-family: var(--mono);
+  font-size: .82rem;
+  font-variant-numeric: tabular-nums;
+}
+.termos .indice { color: var(--tinta-fraca); font-size: .78rem; }
+.termos .valor { color: var(--tinta); }
+
+/* ---- lista de pontos fixos (módulo 3) ----------------------------------- */
+
+.lista-fixos { list-style: none; margin: 0; padding: 0; }
+.lista-fixos li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--e1) var(--e3);
+  padding: var(--e2) 0;
+  border-bottom: 1px solid var(--linha);
+  font-family: var(--sans);
+  font-size: .84rem;
+  font-variant-numeric: tabular-nums;
+}
+.lista-fixos li:last-child { border-bottom: 0; }
+.lista-fixos .fixo-ponto { font-weight: 600; min-width: 8rem; }
+.lista-fixos .fixo-deriv { color: var(--tinta-fraca); min-width: 8rem; }
+.lista-fixos .fixo-classe {
+  font-size: .68rem;
+  font-weight: 600;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+  padding: .1rem .4rem;
+  border: 1px solid currentColor;
+  border-radius: 2px;
+  margin-left: auto;
+}
+.lista-fixos .fixo-classe.atrator      { color: var(--destaque); }
+.lista-fixos .fixo-classe.repulsor     { color: var(--grafico-limite); }
+.lista-fixos .fixo-classe.inconclusivo { color: var(--tinta-fraca); }
+
+/* o canvas do módulo 3 recebe foco para as setas moverem a₀ */
+.canvas-teia { cursor: ew-resize; }
+
 /* ---- indicadores numéricos ---------------------------------------------- */
 
 .indicadores {
@@ -432,6 +552,13 @@ canvas:focus-visible { outline: 2px solid var(--destaque); outline-offset: 2px; 
   margin: 0 0 var(--e3);
 }
 .cartao-corpo p { margin: 0 0 var(--e4); font-size: .93rem; line-height: 1.6; }
+/* A crença falsa no cartão, em citação: é a isca do módulo. */
+.crenca-cartao {
+  font-style: italic;
+  color: var(--grafico-limite);
+  font-size: .88rem !important;
+  margin-bottom: var(--e3) !important;
+}
 .cartao-corpo .acao {
   margin-top: auto;
   align-self: flex-start;
@@ -554,6 +681,49 @@ canvas:focus-visible { outline: 2px solid var(--destaque); outline-offset: 2px; 
   font-size: .7rem;
   color: var(--tinta-fraca);
   margin: var(--e3) 0 0;
+}
+
+/* ---- índice por exercício ----------------------------------------------- */
+
+/* Tabela larga precisa rolar dentro da própria caixa: a página nunca rola
+   na horizontal. */
+.tabela-rolavel { overflow-x: auto; }
+
+.indice-exercicios {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: .88rem;
+  text-align: left;
+}
+.indice-exercicios th,
+.indice-exercicios td {
+  padding: var(--e3) var(--e4) var(--e3) 0;
+  border-bottom: 1px solid var(--linha);
+  vertical-align: baseline;
+}
+.indice-exercicios thead th {
+  font-family: var(--sans);
+  font-size: .68rem;
+  font-weight: 600;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+  color: var(--tinta-fraca);
+  border-bottom-color: var(--linha-forte);
+}
+.indice-exercicios tbody th { font-weight: 600; white-space: nowrap; }
+.indice-exercicios td { color: var(--tinta-media); }
+.indice-exercicios tr:last-child th,
+.indice-exercicios tr:last-child td { border-bottom: 0; }
+
+/* Visível só para leitores de tela. */
+.sr-apenas {
+  position: absolute;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
 }
 
 /* ---- rodapé ------------------------------------------------------------- */

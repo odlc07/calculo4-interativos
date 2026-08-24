@@ -18,6 +18,8 @@
     <a href="teoria.html">Teoria</a>
     <a href="convergencia.html">Convergência</a>
     <a href="epiciclos.html">Epiciclos</a>
+    <a href="teia.html">Teia</a>
+    <a href="geratriz.html">Geratriz</a>
   </nav>
 
   <header class="cabecalho">
@@ -38,29 +40,6 @@
       <span class="math" data-math="\widehat{f}(n)"></span>. A página de
       <a href="teoria.html">teoria</a> reúne as definições e os enunciados completos.
     </p>
-  </div>
-
-  <h2>Os módulos</h2>
-
-  <div class="cartoes">
-
-    <article class="cartao">
-      <canvas id="mini-convergencia" class="miniatura"
-              aria-label="Miniatura do módulo de convergência: onda quadrada em cinza, soma parcial em azul com a orelha do fenômeno de Gibbs ultrapassando o patamar, e linha tracejada no valor limite do overshoot."></canvas>
-      <div class="cartao-corpo">
-        <p class="subtitulo-cartao">Módulo 2</p>
-        <h3 class="titulo">Convergência uniforme</h3>
-        <p>
-          Onda triangular contra onda quadrada, com um único slider de
-          <span class="math" data-math="N"></span> controlando as duas. Na triangular o erro
-          máximo cai a zero; na quadrada ele não se move, e o overshoot de Gibbs estaciona em
-          8,95% do salto por mais termos que se somem. Inclui três identidades numéricas
-          convergindo ao vivo.
-        </p>
-        <a class="acao" href="convergencia.html">Abrir módulo</a>
-      </div>
-    </article>
-
     <article class="cartao">
       <canvas id="mini-epiciclos" class="miniatura"
               aria-label="Miniatura do módulo de epiciclos: astroide em traço fino cinza, cadeia de círculos em cinza e reconstrução por poucos termos de Fourier em azul."></canvas>
@@ -79,6 +58,115 @@
       </div>
     </article>
 
+    <article class="cartao">
+      <canvas id="mini-convergencia" class="miniatura"
+              aria-label="Miniatura do módulo de convergência: onda quadrada em cinza, soma parcial em azul com a orelha do fenômeno de Gibbs ultrapassando o patamar, e linha tracejada no valor limite do overshoot."></canvas>
+      <div class="cartao-corpo">
+        <p class="subtitulo-cartao">Módulo 2</p>
+        <h3 class="titulo">Convergência uniforme</h3>
+        <p>
+          Onda triangular contra onda quadrada, com um único slider de
+          <span class="math" data-math="N"></span> controlando as duas. Na triangular o erro
+          máximo cai a zero; na quadrada ele não se move, e o overshoot de Gibbs estaciona em
+          8,95% do salto por mais termos que se somem. Inclui três identidades numéricas
+          convergindo ao vivo.
+        </p>
+        <a class="acao" href="convergencia.html">Abrir módulo</a>
+      </div>
+    </article>
+
+  </div>
+
+  <h2>Os módulos</h2>
+
+  <div class="cartoes">
+
+    <article class="cartao">
+      <canvas id="mini-teia" class="miniatura"
+              aria-label="Miniatura do módulo de teia: a curva y = raiz de 6 mais x em cinza, a diagonal tracejada, e a órbita espiralando em azul até o ponto fixo em 3."></canvas>
+      <div class="cartao-corpo">
+        <p class="subtitulo-cartao">Módulo 3</p>
+        <h3 class="titulo">Diagrama de teia</h3>
+        <p class="crenca-cartao">“O limite de uma sequência recursiva depende do valor inicial.”</p>
+        <p>
+          Arraste <span class="math" data-math="a_0"></span> pelo domínio inteiro de
+          <span class="math" data-math="sqrt{6+x}"></span> e veja o limite não se mover.
+          Pontos fixos classificados por <span class="math" data-math="|g'(p)|"></span>, e a
+          raiz espúria <span class="math" data-math="-2"></span> marcada com a explicação de
+          por que a álgebra a produz e a função a rejeita.
+        </p>
+        <a class="acao" href="teia.html">Abrir módulo</a>
+      </div>
+    </article>
+
+    <article class="cartao">
+      <canvas id="mini-geratriz" class="miniatura"
+              aria-label="Miniatura do módulo de geratriz: o plano complexo com o disco de convergência preenchido e as duas raízes do denominador, a mais próxima da origem em destaque."></canvas>
+      <div class="cartao-corpo">
+        <p class="subtitulo-cartao">Módulo 4</p>
+        <h3 class="titulo">Da recorrência ao raio</h3>
+        <p class="crenca-cartao">“Raio de convergência é o número que sai do teste da razão, e não significa mais nada.”</p>
+        <p>
+          A função geratriz de uma recorrência linear é racional, e
+          <span class="math" data-math="R"></span> é a distância até a singularidade complexa
+          mais próxima — a mesma que dita a velocidade de crescimento da sequência. Com o
+          exemplo periódico, o raio existe e o limite da razão não.
+        </p>
+        <a class="acao" href="geratriz.html">Abrir módulo</a>
+      </div>
+    </article>
+
+  </div>
+
+  <h2>Índice por exercício</h2>
+
+  <div class="introducao">
+    <p>
+      Cada módulo nasceu de uma questão que já caiu. Quem está revisando um exercício
+      específico pode entrar direto pelo módulo que o responde visualmente.
+    </p>
+  </div>
+
+  <div class="tabela-rolavel">
+    <table class="indice-exercicios" id="indice-exercicios">
+      <caption class="sr-apenas">Exercícios e os módulos que os respondem</caption>
+      <thead>
+        <tr><th scope="col">Exercício</th><th scope="col">O que está em jogo</th><th scope="col">Módulo</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th scope="row"><code>recursao2</code></th>
+          <td>O limite não depende de <span class="math" data-math="a_0"></span>; e por que
+              <span class="math" data-math="-2"></span> é raiz espúria</td>
+          <td><a href="teia.html">Diagrama de teia</a></td>
+        </tr>
+        <tr>
+          <th scope="row"><code>nested-sqrt</code></th>
+          <td>Radicais encaixados como iteração de <span class="math" data-math="g(x)=sqrt{6+x}"></span></td>
+          <td><a href="teia.html">Diagrama de teia</a></td>
+        </tr>
+        <tr>
+          <th scope="row"><code>seqrecursiva</code></th>
+          <td>Função geratriz racional e <span class="math" data-math="R=1/2"></span></td>
+          <td><a href="geratriz.html">Da recorrência ao raio</a></td>
+        </tr>
+        <tr>
+          <th scope="row"><code>seqrecursiva-2</code></th>
+          <td>Mesma construção com <span class="math" data-math="R=1/3"></span></td>
+          <td><a href="geratriz.html">Da recorrência ao raio</a></td>
+        </tr>
+        <tr>
+          <th scope="row">onda quadrada</th>
+          <td>Convergência pontual sem ser uniforme; fenômeno de Gibbs</td>
+          <td><a href="convergencia.html">Convergência uniforme</a></td>
+        </tr>
+        <tr>
+          <th scope="row">decaimento de <span class="math" data-math="widehat{f}(n)"></span></th>
+          <td>O corolário <span class="math" data-math="n^kwidehat{f}(n)	o0"></span> medido, não só enunciado</td>
+          <td><a href="epiciclos.html">Epiciclos e decaimento</a></td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 
   <footer class="rodape">
@@ -99,6 +187,8 @@
 <script src="js/fourier.js"></script>
 <script src="js/curvas.js"></script>
 <script src="js/ondas.js"></script>
+<script src="js/polinomios.js"></script>
+<script src="js/iteracao.js"></script>
 <script src="js/plot.js"></script>
 <script src="js/index.js"></script>
 </body>
