@@ -50,8 +50,11 @@ de duplicar o desenho dentro do controlador. Foi assim que `escalaIsometrica` sa
 Cada página segue a mesma estrutura, e vale manter:
 
 1. **Navegação** e cabeçalho com o número do módulo.
-2. **A crença falsa** que o módulo desfaz, em citação, logo abaixo do título. Ela é o gancho:
-   diz ao aluno o que ele provavelmente pensa de errado, antes de mostrar o contrário.
+2. **A crença falsa** que o módulo desfaz, em citação, logo abaixo do título, sempre com o
+   rótulo “A crença que este módulo desfaz” em cima. Ela é o gancho: diz ao aluno o que ele
+   provavelmente pensa de errado, antes de mostrar o contrário. O rótulo não é decoração —
+   é o que impede a frase de ser lida como afirmação da página. Por isso ela vive aqui, onde
+   a refutação vem logo em seguida, e não no cartão da página inicial.
 3. **Dois ou três parágrafos** enunciando a matemática em jogo, na notação da disciplina.
    O texto ancora; a animação ilustra. Sem texto, vira videogame.
 4. **Controles**, depois **canvas**, depois **indicadores numéricos**.
@@ -82,7 +85,10 @@ Sugestão de arquivos: `simetria.html`, `js/simetria.js`, e as funções puras d
 ## Ao terminar
 
 1. `testes.html` verde, com asserções novas cobrindo o que você acrescentou.
-2. Módulo registrado em `index.html`: um cartão com miniatura e a crença falsa como subtítulo.
+2. Módulo registrado em `index.html`: um cartão com miniatura e o parágrafo que descreve o
+   módulo. **A crença falsa não vai no cartão.** Ela só funciona ao lado da refutação: solta
+   na página inicial, entre aspas e sem rótulo, é uma afirmação falsa que o aluno lê primeiro
+   e pode guardar como verdadeira.
 3. Linha nova no **índice por exercício**, se o módulo responde alguma questão.
 4. Navegação atualizada em todas as páginas.
 5. Confira em tela estreita e com o teclado, sem mouse.

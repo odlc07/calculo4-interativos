@@ -376,7 +376,7 @@ canvas:focus-visible { outline: 2px solid var(--destaque); outline-offset: 2px; 
   max-width: var(--medida);
   margin: 0 0 var(--e5);
   padding: var(--e3) 0 var(--e3) var(--e4);
-  border-left: 3px solid var(--grafico-limite);
+  border-left: 3px solid var(--linha-forte);
   font-size: 1.05rem;
   font-style: italic;
   color: var(--tinta-media);
@@ -389,7 +389,7 @@ canvas:focus-visible { outline: 2px solid var(--destaque); outline-offset: 2px; 
   font-style: normal;
   letter-spacing: .1em;
   text-transform: uppercase;
-  color: var(--grafico-limite);
+  color: var(--tinta-fraca);
   margin-bottom: var(--e2);
 }
 
@@ -576,13 +576,6 @@ input[type="number"]:focus-visible { outline: 2px solid var(--destaque); outline
   margin: 0 0 var(--e3);
 }
 .cartao-corpo p { margin: 0 0 var(--e4); font-size: .93rem; line-height: 1.6; }
-/* A crença falsa no cartão, em citação: é a isca do módulo. */
-.crenca-cartao {
-  font-style: italic;
-  color: var(--grafico-limite);
-  font-size: .88rem !important;
-  margin-bottom: var(--e3) !important;
-}
 .cartao-corpo .acao {
   margin-top: auto;
   align-self: flex-start;
