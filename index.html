@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="description" content="Duas visualizações interativas sobre convergência de séries de Fourier, para a disciplina de Cálculo 4 do ICMC-USP.">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Interativos de Cálculo 4 — séries de Fourier</title>
+<title>Convergência e decaimento em séries de Fourier — Cálculo 4</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2032%2032%22%3E%3Ccircle%20cx%3D%2213%22%20cy%3D%2216%22%20r%3D%229%22%20fill%3D%22none%22%20stroke%3D%22%2316606e%22%20stroke-width%3D%222%22%2F%3E%3Ccircle%20cx%3D%2222%22%20cy%3D%2216%22%20r%3D%224.5%22%20fill%3D%22none%22%20stroke%3D%22%239aa0a4%22%20stroke-width%3D%221.6%22%2F%3E%3Ccircle%20cx%3D%2226.5%22%20cy%3D%2216%22%20r%3D%222.6%22%20fill%3D%22%2316606e%22%2F%3E%3C%2Fsvg%3E">
 <link rel="stylesheet" href="vendor/katex/katex.min.css">
 <link rel="stylesheet" href="css/base.css">
@@ -22,7 +22,7 @@
 
   <header class="cabecalho">
     <p class="disciplina">SMA0356 / SMA0803 — ICMC-USP</p>
-    <h1>Séries de Fourier, com o parâmetro na mão do aluno</h1>
+    <h1>Convergência e decaimento em séries de Fourier</h1>
   </header>
 
   <div class="introducao">
@@ -81,30 +81,14 @@
 
   </div>
 
-  <h2>Como isto está construído</h2>
-  <div class="introducao">
-    <p>
-      Site estático puro: HTML, CSS e JavaScript, sem build step, sem bundler e sem dependência
-      externa. Abre por duplo clique num arquivo e sobe em qualquer servidor de arquivos sem
-      configuração. Todo desenho é <code>&lt;canvas&gt;</code> 2D escrito à mão — nenhuma
-      biblioteca de gráficos. A única dependência é o KaTeX, hospedado dentro do próprio
-      repositório em <code>vendor/katex/</code> para funcionar offline.
-    </p>
-    <p>
-      A matemática vive em módulos puros, sem acesso ao DOM, e é verificada por uma suíte de
-      asserções que roda no navegador: <a href="testes.html">testes.html</a>.
-    </p>
-  </div>
-
   <footer class="rodape">
     <p>
-      Construído por <strong>Otávio</strong> para a disciplina de Cálculo 4 do ICMC-USP,
-      para ficar ao lado das animações em gnuplot já publicadas na seção de gráficos.
-      A notação segue as notas da disciplina; o código-fonte acompanha a página e pode ser lido
-      por inteiro.
+      Construído por <strong>Otávio de Lara Carmelo</strong> para a disciplina de Cálculo 4 do
+      ICMC-USP, para ficar ao lado das animações em gnuplot já publicadas na seção de gráficos.
+      A notação segue as notas da disciplina.
     </p>
     <p class="autoria-tecnica">
-      Site estático, sem build step nem dependência externa. Verificação numérica em
+      A verificação numérica dos módulos matemáticos está em
       <a href="testes.html">testes.html</a>.
     </p>
   </footer>
