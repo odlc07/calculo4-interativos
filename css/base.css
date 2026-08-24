@@ -735,13 +735,14 @@ input[type="number"]:focus-visible { outline: 2px solid var(--destaque); outline
   border-bottom-color: var(--linha-forte);
 }
 .indice-exercicios tbody th { font-weight: 600; white-space: nowrap; }
-/* Nem todo item da primeira coluna e um identificador de exercicio: dois sao
-   nomes descritivos, que nao cabem em <code>. Recebem o mesmo tamanho e a
-   mesma tinta das celulas em <code>, com um pouco menos de peso, ja que a
-   monoespacada tem densidade optica menor que a serifada no mesmo peso. */
+/* Nem todo item da primeira coluna e um identificador que caiba em <code>:
+   dois sao nomes descritivos. Para a coluna ler como uma coisa so, recebem
+   exatamente o tratamento das celulas em <code> — mesma familia, mesmo
+   tamanho, mesma tinta e mesmo peso. */
 .indice-exercicios .rotulo-exercicio {
+  font-family: var(--mono);
   font-size: .86em;
-  font-weight: 500;
+  font-weight: 600;
   color: var(--tinta-media);
   white-space: normal;
 }
