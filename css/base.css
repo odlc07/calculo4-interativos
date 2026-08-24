@@ -735,6 +735,16 @@ input[type="number"]:focus-visible { outline: 2px solid var(--destaque); outline
   border-bottom-color: var(--linha-forte);
 }
 .indice-exercicios tbody th { font-weight: 600; white-space: nowrap; }
+/* Nem todo item da primeira coluna e um identificador de exercicio: dois sao
+   nomes descritivos, que nao cabem em <code>. Recebem o mesmo tamanho e a
+   mesma tinta das celulas em <code>, com um pouco menos de peso, ja que a
+   monoespacada tem densidade optica menor que a serifada no mesmo peso. */
+.indice-exercicios .rotulo-exercicio {
+  font-size: .86em;
+  font-weight: 500;
+  color: var(--tinta-media);
+  white-space: normal;
+}
 .indice-exercicios td { color: var(--tinta-media); }
 .indice-exercicios tr:last-child th,
 .indice-exercicios tr:last-child td { border-bottom: 0; }
