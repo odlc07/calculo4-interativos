@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="description" content="Curvas algébricas como cadeias de epiciclos, com a taxa de decaimento dos coeficientes de Fourier medida e comparada com a previsão da geometria.">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Epiciclos e decaimento em curvas algébricas — Cálculo 4</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2032%2032%22%3E%3Ccircle%20cx%3D%2213%22%20cy%3D%2216%22%20r%3D%229%22%20fill%3D%22none%22%20stroke%3D%22%2316606e%22%20stroke-width%3D%222%22%2F%3E%3Ccircle%20cx%3D%2222%22%20cy%3D%2216%22%20r%3D%224.5%22%20fill%3D%22none%22%20stroke%3D%22%239aa0a4%22%20stroke-width%3D%221.6%22%2F%3E%3Ccircle%20cx%3D%2226.5%22%20cy%3D%2216%22%20r%3D%222.6%22%20fill%3D%22%2316606e%22%2F%3E%3C%2Fsvg%3E">
+<link rel="stylesheet" href="vendor/katex/katex.min.css">
+<link rel="stylesheet" href="css/base.css">
+</head>
+<body>
+<div class="pagina">
+
+  <nav class="navegacao" aria-label="Seções do site">
+    <span class="marca-site">Interativos de Cálculo 4</span>
+    <a href="index.html">Início</a>
+    <a href="teoria.html">Teoria</a>
+    <a href="convergencia.html">Convergência</a>
+    <a href="epiciclos.html" aria-current="page">Epiciclos</a>
+  </nav>
+
+  <header class="cabecalho">
+    <p class="disciplina">SMA0356 / SMA0803 — Módulo 1</p>
+    <h1>Epiciclos e decaimento em curvas algébricas</h1>
+  </header>
+
+  <div class="introducao">
+    <p>
+      Uma curva fechada no plano vira uma função complexa
+      <span class="math" data-math="z(t)=x(t)+i\,y(t)"></span> com
+      <span class="math" data-math="t\in[-\pi,\pi]"></span>, ou seja
+      <span class="math" data-math="L=\pi"></span>. Na forma complexa da série, cada parcela
+      <span class="math" data-math="\widehat{f}(n)\,e^{int}"></span> é um vetor de módulo
+      <span class="math" data-math="|\widehat{f}(n)|"></span> girando com velocidade angular
+      <span class="math" data-math="n"></span>. A soma truncada é uma cadeia de círculos, e a
+      ponta do último desenha a curva.
+    </p>
+
+    <div class="formula" data-math-display="S_f \;=\; \sum_{n=-\infty}^{\infty}\widehat{f}(n)\,e^{i n\pi x/L}, \qquad \widehat{f}(n)=\frac{1}{2L}\bigl\langle f,\,e^{-i n\pi x/L}\bigr\rangle"></div>
+
+    <p>
+      O corolário demonstrado em aula diz que, se <span class="math" data-math="f"></span> tem
+      <span class="math" data-math="k"></span> derivadas, então
+      <span class="math" data-math="n^{k}\widehat{f}(n)\to 0"></span>. Ele é
+      <span class="destaque-texto">qualitativo</span>: garante que o espectro morre, não a que
+      taxa. Aqui a taxa é medida numericamente — uma reta ajustada por mínimos quadrados em
+      <span class="math" data-math="(\log n,\;\log|\widehat{f}(n)|)"></span> — e a previsão é
+      conferida em curvas cujas singularidades são conhecidas de antemão.
+    </p>
+
+    <p>
+      Compare a <span class="destaque-texto">astroide</span>, com quatro cúspides, contra a
+      <span class="destaque-texto">lemniscata</span>, que é lisa apesar da auto-interseção. É
+      esse par que carrega o argumento do módulo.
+    </p>
+  </div>
+
+  <h2>Controles</h2>
+
+  <div class="controles">
+    <div class="seletor" id="seletor-curva" role="group" aria-label="Escolha da curva"></div>
+  </div>
+
+  <div class="controles">
+    <div class="controle">
+      <label for="slider-k">Harmônicos <span class="math" data-math="K"></span></label>
+      <input type="range" id="slider-k" min="1" max="60" value="8" step="1">
+      <span class="valor-controle" id="valor-k">8</span>
+    </div>
+    <div class="controle">
+      <label for="slider-t">Posição <span class="math" data-math="t"></span></label>
+      <input type="range" id="slider-t" min="0" max="1000" value="0" step="1"
+             aria-label="Posição na volta; mover pausa a animação">
+    </div>
+    <button type="button" id="botao-pausar" aria-pressed="false">pausar</button>
+    <div class="opcao">
+      <input type="checkbox" id="check-arco" checked>
+      <label for="check-arco">reparametrizar por comprimento de arco</label>
+    </div>
+  </div>
+
+  <div class="paineis">
+
+    <section class="quadro">
+      <div class="painel-cabeca">
+        <h3>A cadeia de epiciclos</h3>
+      </div>
+      <canvas id="canvas-epiciclos" class="canvas-palco"
+              aria-label="Animação da cadeia de epiciclos: a curva exata em traço fino cinza ao fundo, os círculos e vetores girando em cinza, e o traço da reconstrução truncada em azul."></canvas>
+      <div class="legenda">
+        <span><i class="amostra exata"></i>curva exata</span>
+        <span><i class="amostra serie"></i>reconstrução com |n| ≤ K</span>
+      </div>
+
+      <div class="indicadores">
+        <div class="indicador">
+          <span class="rotulo">termos usados</span>
+          <span class="numero" id="ind-termos">—</span>
+          <span class="apoio" id="ind-termos-apoio">2K + 1</span>
+        </div>
+        <div class="indicador">
+          <span class="rotulo">erro de Parseval</span>
+          <span class="numero" id="ind-erro">—</span>
+          <span class="apoio">energia na cauda</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="quadro">
+      <div class="painel-cabeca">
+        <h3>Espectro em log-log</h3>
+      </div>
+      <canvas id="canvas-espectro" class="canvas-espectro"
+              aria-label="Gráfico log-log do módulo dos coeficientes de Fourier contra a frequência, com a reta de mínimos quadrados sobreposta e a faixa usada no ajuste destacada."></canvas>
+      <div class="legenda">
+        <span><i class="amostra exata"></i>|f̂(n)|</span>
+        <span><i class="amostra limite"></i>modelo ajustado</span>
+        <span><i class="amostra corte"></i>corte em K</span>
+        <span>faixa do ajuste: 2 ≤ n ≤ 48</span>
+      </div>
+
+      <div class="indicadores">
+        <div class="indicador">
+          <span class="rotulo">previsto pela geometria</span>
+          <span class="numero texto" id="ind-previsto">—</span>
+          <span class="apoio" id="ind-previsto-apoio">—</span>
+        </div>
+        <div class="indicador">
+          <span class="rotulo">expoente medido</span>
+          <span class="numero" id="ind-expoente">—</span>
+          <span class="apoio" id="ind-expoente-apoio">—</span>
+        </div>
+        <div class="indicador">
+          <span class="rotulo">modelo que vence</span>
+          <span class="numero texto" id="ind-modelo">—</span>
+          <span class="apoio" id="ind-modelo-apoio">—</span>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <h2>Como ler o que está na tela</h2>
+
+  <div class="introducao">
+    <p>
+      <strong>A reparametrização por comprimento de arco não é detalhe de implementação.</strong>
+      Uma curva não tem parametrização canônica, e medir o decaimento numa parametrização
+      arbitrária mede a parametrização, não a geometria. Por isso os
+      <span class="math" data-math="N=512"></span> pontos da transformada são equiespaçados
+      <em>em arco</em>, e não no parâmetro.
+    </p>
+    <p>
+      Desligue o checkbox com a astroide selecionada. O expoente vira
+      <span class="destaque-texto">espectro finito</span>, porque na parametrização usual
+      <span class="math" data-math="(\cos^3 s,\;\sin^3 s)"></span> a astroide é, exatamente,
+      <span class="math" data-math="z(s)=\tfrac34 e^{is}+\tfrac14 e^{-3is}"></span> — dois
+      círculos reconstroem quatro cúspides com precisão de máquina. Reparametrizada em arco, a
+      mesma curva decai como <span class="math" data-math="n^{-2}"></span>: na cúspide a tangente
+      se inverte, e em arco isso é um bico. O espectro finito era propriedade da fórmula
+      escolhida, não das cúspides.
+    </p>
+    <p>
+      <strong>Nem todo espectro é uma lei de potência, e a página diz quando não é.</strong>
+      Ajustar uma reta em <span class="math" data-math="(\log n,\;\log|\widehat{f}(n)|)"></span>
+      pressupõe que os coeficientes decaem como
+      <span class="math" data-math="n^{-\alpha}"></span>. Numa curva
+      <em>analítica</em> eles decaem como <span class="math" data-math="e^{-cn}"></span>, mais
+      rápido que qualquer potência, e a reta passa a medir algo que não existe. Por isso os dois
+      modelos são ajustados e comparados pelo <span class="math" data-math="R^2"></span>: uma lei
+      de potência é reta em log-log, um decaimento exponencial é uma curva que despenca. Selecione
+      a lemniscata e repare — o expoente fica marcado em vermelho porque o modelo que vence é o
+      exponencial, exatamente como a geometria previa. Quando a faixa
+      <span class="math" data-math="2\le n\le 48"></span> não decide entre os dois, a página
+      desenha os dois e admite o empate em vez de escolher por um fio.
+    </p>
+    <p>
+      <strong>A ordem dos círculos é escolha visual.</strong> Eles são desenhados por módulo
+      decrescente, porque assim a cadeia fica legível. A soma matemática continua sendo sobre
+      <span class="math" data-math="|n|\le K"></span>, e a ordem das parcelas não a altera.
+    </p>
+    <p>
+      <strong>Muitos coeficientes são exatamente nulos, e por isso o slider parece pular.</strong>
+      A astroide tem simetria de ordem 4, o que força
+      <span class="math" data-math="\widehat{f}(n)=0"></span> para todo
+      <span class="math" data-math="n\not\equiv 1 \pmod 4"></span> — apenas 128 dos 512
+      coeficientes sobrevivem. Como <span class="math" data-math="+K"></span> e
+      <span class="math" data-math="-K"></span> entram juntos, só um dos dois pode ser não nulo, e
+      só quando <span class="math" data-math="K"></span> é ímpar: o desenho muda de dois em dois
+      passos. Repare no indicador de termos, que diz quantos dos
+      <span class="math" data-math="2K+1"></span> são de fato não nulos, e na linha tracejada de
+      corte no gráfico ao lado — quando ela varre uma região sem pontos, nada muda porque não há o
+      que somar. Na lemniscata e na cúbica nodal, sem essa simetria, cada passo muda o desenho.
+    </p>
+    <p>
+      Esses pontos nulos também não aparecem no gráfico log-log e não entram no ajuste —
+      <span class="math" data-math="\log 0"></span> não é um número.
+    </p>
+  </div>
+
+  <footer class="rodape">
+    <p>
+      Os enunciados completos e a notação da disciplina estão em
+      <a href="teoria.html">Teoria</a>. O erro exibido é o de Parseval, calculado sobre a cauda
+      dos coeficientes, e não uma comparação ponto a ponto com a curva.
+    </p>
+  </footer>
+
+</div>
+
+<script src="vendor/katex/katex.min.js"></script>
+<script src="js/formulas.js"></script>
+<script src="js/fourier.js"></script>
+<script src="js/curvas.js"></script>
+<script src="js/plot.js"></script>
+<script src="js/epiciclos.js"></script>
+</body>
+</html>

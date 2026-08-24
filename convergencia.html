@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="description" content="Onda triangular contra onda quadrada: o erro máximo que cai a zero e o overshoot de Gibbs que estaciona em 8,95% do salto.">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Convergência uniforme: triangular contra quadrada — Cálculo 4</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2032%2032%22%3E%3Ccircle%20cx%3D%2213%22%20cy%3D%2216%22%20r%3D%229%22%20fill%3D%22none%22%20stroke%3D%22%2316606e%22%20stroke-width%3D%222%22%2F%3E%3Ccircle%20cx%3D%2222%22%20cy%3D%2216%22%20r%3D%224.5%22%20fill%3D%22none%22%20stroke%3D%22%239aa0a4%22%20stroke-width%3D%221.6%22%2F%3E%3Ccircle%20cx%3D%2226.5%22%20cy%3D%2216%22%20r%3D%222.6%22%20fill%3D%22%2316606e%22%2F%3E%3C%2Fsvg%3E">
+<link rel="stylesheet" href="vendor/katex/katex.min.css">
+<link rel="stylesheet" href="css/base.css">
+</head>
+<body>
+<div class="pagina">
+
+  <nav class="navegacao" aria-label="Seções do site">
+    <span class="marca-site">Interativos de Cálculo 4</span>
+    <a href="index.html">Início</a>
+    <a href="teoria.html">Teoria</a>
+    <a href="convergencia.html" aria-current="page">Convergência</a>
+    <a href="epiciclos.html">Epiciclos</a>
+  </nav>
+
+  <header class="cabecalho">
+    <p class="disciplina">SMA0356 / SMA0803 — Módulo 2</p>
+    <h1>Convergência uniforme: triangular contra quadrada</h1>
+  </header>
+
+  <div class="introducao">
+    <p>
+      Ambas as funções são <span class="destaque-texto">2L</span>-periódicas e se escrevem na
+      base trigonométrica <span class="math" data-math="\psi_n(x)=\cos(n\pi x/L)"></span>,
+      <span class="math" data-math="\varphi_k(x)=\sin(k\pi x/L)"></span>, com coeficientes
+      <span class="math" data-math="a_n=\tfrac1L\langle f,\psi_n\rangle"></span> e
+      <span class="math" data-math="b_k=\tfrac1L\langle f,\varphi_k\rangle"></span>:
+    </p>
+
+    <div class="formula" data-math-display="S_f \;=\; \frac{a_0}{2} \;+\; \sum_{n\ge 1}\bigl(a_n\,\psi_n + b_n\,\varphi_n\bigr)"></div>
+
+    <p>
+      O teorema de convergência uniforme pede que <span class="math" data-math="f"></span> seja
+      contínua e <span class="math" data-math="2L"></span>-periódica, com derivada seccionalmente
+      contínua. A <span class="destaque-texto">onda triangular</span>
+      <span class="math" data-math="f(x)=|x|"></span> em <span class="math" data-math="[-1,1]"></span>
+      satisfaz as hipóteses. A <span class="destaque-texto">onda quadrada</span>
+      <span class="math" data-math="f(x)=\pi\,\chi_{[0,\pi)}(x)"></span> em
+      <span class="math" data-math="[-\pi,\pi]"></span> é descontínua e não satisfaz: sua série
+      converge para <span class="math" data-math="f(x)"></span> em todo ponto <em>exceto</em> nos
+      da forma <span class="math" data-math="n\pi"></span>.
+    </p>
+
+    <p>
+      O mesmo <span class="math" data-math="N"></span> controla os dois painéis. Vale olhar dois
+      números diferentes na quadrada. O primeiro é a norma do sup, que
+      <span class="destaque-texto">não se move</span>: toda soma parcial passa pelo ponto médio do
+      salto, então <span class="math" data-math="\|f-S_N\|_\infty=\pi/2"></span> para todo
+      <span class="math" data-math="N"></span> — a negação direta da convergência uniforme. O
+      segundo é o overshoot de Gibbs, a orelha logo depois do salto: ela
+      <span class="destaque-texto">estreita mas não encolhe</span>, estacionando em cerca de
+      8,95% da altura do salto. Na triangular, o erro máximo simplesmente cai a zero.
+    </p>
+  </div>
+
+  <div class="controles">
+    <div class="controle">
+      <label for="slider-n">Termos <span class="math" data-math="N"></span></label>
+      <input type="range" id="slider-n" min="1" max="200" value="12" step="1"
+             aria-describedby="descricao-n">
+      <span class="valor-controle" id="valor-n">12</span>
+    </div>
+    <button type="button" id="botao-reset">voltar a N = 12</button>
+  </div>
+  <p class="nota" id="descricao-n">
+    O somatório vai de <span class="math" data-math="n=1"></span> até
+    <span class="math" data-math="N"></span>, contando apenas os harmônicos ímpares
+    <span class="math" data-math="2n-1"></span> — os únicos não nulos nas duas ondas.
+  </p>
+
+  <h2>Os dois exemplos, lado a lado</h2>
+
+  <div class="paineis">
+
+    <!-- ---------------------------------------------------------- triangular -->
+    <section class="quadro">
+      <div class="painel-cabeca">
+        <h3>Onda triangular</h3>
+        <span class="marcador satisfaz">satisfaz as hipóteses</span>
+      </div>
+      <div class="formula" data-math-display="S_f(x)=\frac12-\sum_{n\ge1}\Bigl(\frac{2}{(2n-1)\pi}\Bigr)^{2}\cos\bigl((2n-1)\pi x\bigr)"></div>
+
+      <canvas id="canvas-triangular" class="canvas-funcao"
+              aria-label="Gráfico da onda triangular f(x) = |x| em cinza e da soma parcial da série de Fourier em azul, sobre pouco mais de um período."></canvas>
+      <div class="legenda">
+        <span><i class="amostra exata"></i>f</span>
+        <span><i class="amostra serie"></i>S<sub>N</sub></span>
+      </div>
+
+      <p class="subtitulo-grafico">Erro máximo ‖f − S<sub>N</sub>‖<sub>∞</sub> contra N</p>
+      <canvas id="canvas-erro-triangular" class="canvas-erro"
+              aria-label="Gráfico do erro máximo da onda triangular em função de N, decrescendo para zero."></canvas>
+
+      <div class="indicadores">
+        <div class="indicador">
+          <span class="rotulo">erro máximo</span>
+          <span class="numero" id="ind-sup-tri">—</span>
+          <span class="apoio">tende a zero</span>
+        </div>
+        <div class="indicador">
+          <span class="rotulo">atingido em</span>
+          <span class="numero" id="ind-arg-tri">x = 0</span>
+          <span class="apoio">e em x = ±1</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ------------------------------------------------------------ quadrada -->
+    <section class="quadro">
+      <div class="painel-cabeca">
+        <h3>Onda quadrada</h3>
+        <span class="marcador nao-satisfaz">não satisfaz</span>
+      </div>
+      <div class="formula" data-math-display="S_f(x)=\frac{\pi}{2}+\sum_{n\ge1}\frac{2}{2n-1}\sin\bigl((2n-1)x\bigr)"></div>
+
+      <canvas id="canvas-quadrada" class="canvas-funcao"
+              aria-label="Gráfico da onda quadrada em cinza e da soma parcial da série em azul, com a orelha do fenômeno de Gibbs logo depois de cada salto e uma linha tracejada no valor limite do overshoot."></canvas>
+      <div class="legenda">
+        <span><i class="amostra exata"></i>f</span>
+        <span><i class="amostra serie"></i>S<sub>N</sub></span>
+        <span><i class="amostra limite"></i>π + 0,2811</span>
+      </div>
+
+      <p class="subtitulo-grafico">Overshoot de Gibbs contra N</p>
+      <canvas id="canvas-erro-quadrada" class="canvas-erro"
+              aria-label="Gráfico do overshoot de Gibbs em função de N, estacionando numa linha tracejada em 0,2811 em vez de tender a zero."></canvas>
+
+      <div class="indicadores">
+        <div class="indicador">
+          <span class="rotulo">erro máximo</span>
+          <span class="numero estavel" id="ind-sup-quad">—</span>
+          <span class="apoio">= π/2, constante em N</span>
+        </div>
+        <div class="indicador">
+          <span class="rotulo">overshoot de Gibbs</span>
+          <span class="numero estavel" id="ind-gibbs">—</span>
+          <span class="apoio" id="ind-gibbs-apoio">—</span>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <p class="nota">
+    Os dois gráficos de erro compartilham a mesma escala vertical, então a comparação é direta:
+    a curva da esquerda mergulha no eixo, a da direita se deita sobre a linha tracejada. A norma
+    do sup da quadrada, <span class="math" data-math="\pi/2\approx1{,}5708"></span>, está fora
+    dessa escala justamente por não depender de <span class="math" data-math="N"></span>.
+  </p>
+
+  <h2>Três identidades convergindo ao vivo</h2>
+  <p class="nota">
+    Os mesmos <span class="math" data-math="N"></span> termos, avaliados nos pontos onde as duas
+    séries fecham somas conhecidas. Em azul, os dígitos que já coincidem com o valor exato.
+  </p>
+
+  <div class="identidades" id="identidades"></div>
+
+  <footer class="rodape">
+    <p>
+      Os enunciados completos dos teoremas e a notação da disciplina estão em
+      <a href="teoria.html">Teoria</a>. Site estático: HTML, CSS e JavaScript puro, sem
+      bibliotecas de gráficos — todo desenho é <code>&lt;canvas&gt;</code> 2D.
+    </p>
+  </footer>
+
+</div>
+
+<script src="vendor/katex/katex.min.js"></script>
+<script src="js/formulas.js"></script>
+<script src="js/ondas.js"></script>
+<script src="js/plot.js"></script>
+<script src="js/convergencia.js"></script>
+</body>
+</html>

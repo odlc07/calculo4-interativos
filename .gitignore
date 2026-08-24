@@ -1,0 +1,9 @@
+# lixo de sistema operacional
+Thumbs.db
+desktop.ini
+.DS_Store
+
+# nada de build: este projeto nao tem etapa de compilacao
+
+# documento de especificação: fica só na máquina, fora do repositório
+BRIEF_calculo4_interativos.md

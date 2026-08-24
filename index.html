@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="description" content="Duas visualizações interativas sobre convergência de séries de Fourier, para a disciplina de Cálculo 4 do ICMC-USP.">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Interativos de Cálculo 4 — séries de Fourier</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2032%2032%22%3E%3Ccircle%20cx%3D%2213%22%20cy%3D%2216%22%20r%3D%229%22%20fill%3D%22none%22%20stroke%3D%22%2316606e%22%20stroke-width%3D%222%22%2F%3E%3Ccircle%20cx%3D%2222%22%20cy%3D%2216%22%20r%3D%224.5%22%20fill%3D%22none%22%20stroke%3D%22%239aa0a4%22%20stroke-width%3D%221.6%22%2F%3E%3Ccircle%20cx%3D%2226.5%22%20cy%3D%2216%22%20r%3D%222.6%22%20fill%3D%22%2316606e%22%2F%3E%3C%2Fsvg%3E">
+<link rel="stylesheet" href="vendor/katex/katex.min.css">
+<link rel="stylesheet" href="css/base.css">
+</head>
+<body>
+<div class="pagina">
+
+  <nav class="navegacao" aria-label="Seções do site">
+    <span class="marca-site">Interativos de Cálculo 4</span>
+    <a href="index.html" aria-current="page">Início</a>
+    <a href="teoria.html">Teoria</a>
+    <a href="convergencia.html">Convergência</a>
+    <a href="epiciclos.html">Epiciclos</a>
+  </nav>
+
+  <header class="cabecalho">
+    <p class="disciplina">SMA0356 / SMA0803 — ICMC-USP</p>
+    <h1>Séries de Fourier, com o parâmetro na mão do aluno</h1>
+  </header>
+
+  <div class="introducao">
+    <p>
+      Duas visualizações interativas sobre convergência de séries de Fourier. A diferença em
+      relação a uma animação em laço é que aqui <span class="destaque-texto">o aluno controla o
+      parâmetro</span>: dá para parar num valor, comparar dois números lado a lado e voltar
+      atrás — que é o que uma patologia de convergência exige para ser percebida.
+    </p>
+    <p>
+      A notação segue as notas da disciplina: intervalo <span class="math" data-math="[-L,L]"></span>,
+      convenção com <span class="math" data-math="a_0/2"></span>, e coeficiente complexo escrito
+      <span class="math" data-math="\widehat{f}(n)"></span>. A página de
+      <a href="teoria.html">teoria</a> reúne as definições e os enunciados completos.
+    </p>
+  </div>
+
+  <h2>Os módulos</h2>
+
+  <div class="cartoes">
+
+    <article class="cartao">
+      <canvas id="mini-convergencia" class="miniatura"
+              aria-label="Miniatura do módulo de convergência: onda quadrada em cinza, soma parcial em azul com a orelha do fenômeno de Gibbs ultrapassando o patamar, e linha tracejada no valor limite do overshoot."></canvas>
+      <div class="cartao-corpo">
+        <p class="subtitulo-cartao">Módulo 2</p>
+        <h3 class="titulo">Convergência uniforme</h3>
+        <p>
+          Onda triangular contra onda quadrada, com um único slider de
+          <span class="math" data-math="N"></span> controlando as duas. Na triangular o erro
+          máximo cai a zero; na quadrada ele não se move, e o overshoot de Gibbs estaciona em
+          8,95% do salto por mais termos que se somem. Inclui três identidades numéricas
+          convergindo ao vivo.
+        </p>
+        <a class="acao" href="convergencia.html">Abrir módulo</a>
+      </div>
+    </article>
+
+    <article class="cartao">
+      <canvas id="mini-epiciclos" class="miniatura"
+              aria-label="Miniatura do módulo de epiciclos: astroide em traço fino cinza, cadeia de círculos em cinza e reconstrução por poucos termos de Fourier em azul."></canvas>
+      <div class="cartao-corpo">
+        <p class="subtitulo-cartao">Módulo 1</p>
+        <h3 class="titulo">Epiciclos e decaimento</h3>
+        <p>
+          Curvas algébricas fechadas viram <span class="math" data-math="z(t)=x(t)+iy(t)"></span>,
+          e cada termo <span class="math" data-math="\widehat{f}(n)e^{int}"></span> é um vetor
+          girando. O corolário de que <span class="math" data-math="n^k\widehat{f}(n)\to0"></span>
+          quando <span class="math" data-math="f"></span> tem <span class="math" data-math="k"></span>
+          derivadas é qualitativo — aqui a taxa é medida, e conferida em curvas com
+          singularidades conhecidas.
+        </p>
+        <a class="acao" href="epiciclos.html">Abrir módulo</a>
+      </div>
+    </article>
+
+  </div>
+
+  <h2>Como isto está construído</h2>
+  <div class="introducao">
+    <p>
+      Site estático puro: HTML, CSS e JavaScript, sem build step, sem bundler e sem dependência
+      externa. Abre por duplo clique num arquivo e sobe em qualquer servidor de arquivos sem
+      configuração. Todo desenho é <code>&lt;canvas&gt;</code> 2D escrito à mão — nenhuma
+      biblioteca de gráficos. A única dependência é o KaTeX, hospedado dentro do próprio
+      repositório em <code>vendor/katex/</code> para funcionar offline.
+    </p>
+    <p>
+      A matemática vive em módulos puros, sem acesso ao DOM, e é verificada por uma suíte de
+      asserções que roda no navegador: <a href="testes.html">testes.html</a>.
+    </p>
+  </div>
+
+  <footer class="rodape">
+    <p>
+      Construído por <strong>Otávio</strong> para a disciplina de Cálculo 4 do ICMC-USP,
+      para ficar ao lado das animações em gnuplot já publicadas na seção de gráficos.
+      A notação segue as notas da disciplina; o código-fonte acompanha a página e pode ser lido
+      por inteiro.
+    </p>
+    <p class="autoria-tecnica">
+      Site estático, sem build step nem dependência externa. Verificação numérica em
+      <a href="testes.html">testes.html</a>.
+    </p>
+  </footer>
+
+</div>
+
+<script src="vendor/katex/katex.min.js"></script>
+<script src="js/formulas.js"></script>
+<script src="js/fourier.js"></script>
+<script src="js/curvas.js"></script>
+<script src="js/ondas.js"></script>
+<script src="js/plot.js"></script>
+<script src="js/index.js"></script>
+</body>
+</html>

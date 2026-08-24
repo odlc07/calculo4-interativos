@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="description" content="Suíte de asserções sobre os módulos matemáticos do projeto.">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Testes — módulos matemáticos</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2032%2032%22%3E%3Ccircle%20cx%3D%2213%22%20cy%3D%2216%22%20r%3D%229%22%20fill%3D%22none%22%20stroke%3D%22%2316606e%22%20stroke-width%3D%222%22%2F%3E%3Ccircle%20cx%3D%2222%22%20cy%3D%2216%22%20r%3D%224.5%22%20fill%3D%22none%22%20stroke%3D%22%239aa0a4%22%20stroke-width%3D%221.6%22%2F%3E%3Ccircle%20cx%3D%2226.5%22%20cy%3D%2216%22%20r%3D%222.6%22%20fill%3D%22%2316606e%22%2F%3E%3C%2Fsvg%3E">
+<style>
+/* Página de verificação. Estilo próprio e enxuto: não é parte do site que o
+   professor publica, e não deve depender do css/base.css dos módulos. */
+:root {
+  --fundo: #fbfbf9;
+  --papel: #ffffff;
+  --tinta: #16181a;
+  --tinta-fraca: #5c6266;
+  --linha: #dcdcd6;
+  --destaque: #16606e;
+  --passou: #2c6b41;
+  --falhou: #a3282a;
+  --passou-fundo: #eef4ef;
+  --falhou-fundo: #fbeeee;
+  --serif: Charter, "Bitstream Charter", "Iowan Old Style", Georgia, "Times New Roman", serif;
+  --sans: "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --mono: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --fundo: #16181a; --papel: #1d2023; --tinta: #e8e8e4; --tinta-fraca: #9aa0a4;
+    --linha: #33383c; --destaque: #6fc3d2; --passou: #7fc094; --falhou: #e8908f;
+    --passou-fundo: #1e2723; --falhou-fundo: #2b1f20;
+  }
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0; padding: 2.5rem 1.25rem 4rem;
+  background: var(--fundo); color: var(--tinta);
+  font-family: var(--serif); font-size: 17px; line-height: 1.55;
+  font-variant-numeric: tabular-nums;
+}
+main { max-width: 56rem; margin: 0 auto; }
+.voltar {
+  display: flex; flex-wrap: wrap; gap: .1rem 1.6rem;
+  font-family: var(--sans); font-size: .82rem;
+  padding-bottom: .7rem; margin-bottom: 1.6rem;
+  border-bottom: 1px solid var(--linha);
+}
+.voltar a { color: var(--tinta-fraca); text-decoration: none; padding: .15rem 0; }
+.voltar a:hover { color: var(--tinta); }
+.voltar a:focus-visible { outline: 2px solid var(--destaque); outline-offset: 3px; }
+h1 { font-size: 1.5rem; font-weight: 600; margin: 0 0 .35rem; letter-spacing: -.01em; }
+.subtitulo { margin: 0 0 1.75rem; color: var(--tinta-fraca); font-size: .95rem; }
+.subtitulo code { font-family: var(--mono); font-size: .85em; }
+
+.resumo {
+  display: flex; flex-wrap: wrap; align-items: baseline; gap: .5rem 1.5rem;
+  border: 1px solid var(--linha); border-left: 3px solid var(--destaque);
+  background: var(--papel); padding: .9rem 1.1rem; margin-bottom: 2rem;
+}
+.resumo .placar { font-family: var(--sans); font-size: 1.15rem; font-weight: 600; }
+.resumo .placar.ruim { color: var(--falhou); }
+.resumo .meta { font-family: var(--sans); font-size: .85rem; color: var(--tinta-fraca); }
+button {
+  font: inherit; font-family: var(--sans); font-size: .85rem;
+  padding: .35rem .8rem; margin-left: auto;
+  background: var(--papel); color: var(--tinta);
+  border: 1px solid var(--linha); border-radius: 2px; cursor: pointer;
+}
+button:hover { border-color: var(--destaque); }
+button:focus-visible { outline: 2px solid var(--destaque); outline-offset: 2px; }
+
+h2 {
+  font-family: var(--sans); font-size: .78rem; font-weight: 600;
+  text-transform: uppercase; letter-spacing: .09em; color: var(--tinta-fraca);
+  margin: 2rem 0 .6rem; padding-bottom: .3rem; border-bottom: 1px solid var(--linha);
+}
+ol { list-style: none; margin: 0; padding: 0; }
+li {
+  display: grid; grid-template-columns: 4.5rem 1fr; gap: .1rem .9rem;
+  padding: .6rem .75rem; border-bottom: 1px solid var(--linha);
+}
+li.ok    { background: var(--passou-fundo); }
+li.falha { background: var(--falhou-fundo); }
+.marca {
+  font-family: var(--sans); font-size: .72rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: .06em; padding-top: .22rem;
+}
+li.ok .marca    { color: var(--passou); }
+li.falha .marca { color: var(--falhou); }
+.nome { font-weight: 500; }
+.detalhe {
+  grid-column: 2; font-family: var(--mono); font-size: .78rem; line-height: 1.5;
+  color: var(--tinta-fraca); word-break: break-word;
+}
+li.falha .detalhe { color: var(--falhou); }
+.tempo { font-family: var(--mono); font-size: .7rem; color: var(--tinta-fraca); }
+@media (max-width: 480px) {
+  li { grid-template-columns: 1fr; }
+  .detalhe { grid-column: 1; }
+}
+</style>
+</head>
+<body>
+<main>
+  <nav class="voltar" aria-label="Seções do site">
+    <a href="index.html">Início</a>
+    <a href="teoria.html">Teoria</a>
+    <a href="convergencia.html">Convergência</a>
+    <a href="epiciclos.html">Epiciclos</a>
+  </nav>
+  <h1>Testes de <code>fourier.js</code>, <code>curvas.js</code> e <code>ondas.js</code></h1>
+  <p class="subtitulo">
+    Asserções sobre os módulos puros — DFT, identidade de Parseval, ajuste
+    log-log, reparametrização por comprimento de arco, e as séries da triangular
+    e da quadrada. Nenhum acesso ao DOM dentro dos módulos testados; esta página
+    só desenha o resultado. A mesma suíte vive em <code>js/testes.js</code>.
+    <br>Esta <strong>não</strong> é uma das páginas interativas — os módulos são
+    <code>convergencia.html</code> e <code>epiciclos.html</code>.
+  </p>
+
+  <div class="resumo">
+    <span class="placar" id="placar">executando…</span>
+    <span class="meta" id="meta"></span>
+    <button type="button" id="repetir">rodar de novo</button>
+  </div>
+
+  <div id="saida" aria-live="polite"></div>
+</main>
+
+<script src="js/fourier.js"></script>
+<script src="js/curvas.js"></script>
+<script src="js/ondas.js"></script>
+<script src="js/testes.js"></script>
+<script>
+(function () {
+  'use strict';
+  var saida = document.getElementById('saida');
+  var placar = document.getElementById('placar');
+  var meta = document.getElementById('meta');
+
+  function rodar() {
+    saida.textContent = '';
+    placar.textContent = 'executando…';
+    placar.className = 'placar';
+    meta.textContent = '';
+
+    // deixa o navegador pintar o "executando…" antes de travar no cálculo
+    requestAnimationFrame(function () {
+      var t0 = performance.now();
+      var res = Testes.executar();
+      var ms = performance.now() - t0;
+      var passaram = res.filter(function (r) { return r.ok; }).length;
+
+      placar.textContent = passaram + ' de ' + res.length + ' passaram';
+      placar.className = 'placar' + (passaram === res.length ? '' : ' ruim');
+      meta.textContent = ms.toFixed(0) + ' ms';
+      document.title = (passaram === res.length ? '' : '[FALHOU] ') +
+                       'Testes — fourier.js e curvas.js';
+
+      var grupoAtual = null, lista = null;
+      res.forEach(function (r) {
+        if (r.grupo !== grupoAtual) {
+          grupoAtual = r.grupo;
+          var h = document.createElement('h2');
+          h.textContent = grupoAtual;
+          saida.appendChild(h);
+          lista = document.createElement('ol');
+          saida.appendChild(lista);
+        }
+        var li = document.createElement('li');
+        li.className = r.ok ? 'ok' : 'falha';
+
+        var marca = document.createElement('span');
+        marca.className = 'marca';
+        marca.textContent = r.ok ? 'passou' : 'falhou';
+        li.appendChild(marca);
+
+        var nome = document.createElement('span');
+        nome.className = 'nome';
+        nome.textContent = r.nome;
+        if (r.ms > 60) {
+          var t = document.createElement('span');
+          t.className = 'tempo';
+          t.textContent = '  ' + r.ms.toFixed(0) + ' ms';
+          nome.appendChild(t);
+        }
+        li.appendChild(nome);
+
+        if (r.detalhe) {
+          var d = document.createElement('span');
+          d.className = 'detalhe';
+          d.textContent = r.detalhe;
+          li.appendChild(d);
+        }
+        lista.appendChild(li);
+      });
+    });
+  }
+
+  document.getElementById('repetir').addEventListener('click', rodar);
+  rodar();
+})();
+</script>
+</body>
+</html>

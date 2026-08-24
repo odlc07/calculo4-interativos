@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="description" content="Notação e enunciados das séries de Fourier, na convenção das notas da disciplina.">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Teoria — notação e enunciados | Interativos de Cálculo 4</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2032%2032%22%3E%3Ccircle%20cx%3D%2213%22%20cy%3D%2216%22%20r%3D%229%22%20fill%3D%22none%22%20stroke%3D%22%2316606e%22%20stroke-width%3D%222%22%2F%3E%3Ccircle%20cx%3D%2222%22%20cy%3D%2216%22%20r%3D%224.5%22%20fill%3D%22none%22%20stroke%3D%22%239aa0a4%22%20stroke-width%3D%221.6%22%2F%3E%3Ccircle%20cx%3D%2226.5%22%20cy%3D%2216%22%20r%3D%222.6%22%20fill%3D%22%2316606e%22%2F%3E%3C%2Fsvg%3E">
+<link rel="stylesheet" href="vendor/katex/katex.min.css">
+<link rel="stylesheet" href="css/base.css">
+</head>
+<body>
+<div class="pagina">
+
+  <nav class="navegacao" aria-label="Seções do site">
+    <span class="marca-site">Interativos de Cálculo 4</span>
+    <a href="index.html">Início</a>
+    <a href="teoria.html" aria-current="page">Teoria</a>
+    <a href="convergencia.html">Convergência</a>
+    <a href="epiciclos.html">Epiciclos</a>
+  </nav>
+
+  <header class="cabecalho">
+    <p class="disciplina">Referência</p>
+    <h1>Notação e enunciados</h1>
+  </header>
+
+  <div class="introducao">
+    <p>
+      Esta página reúne as definições e os teoremas que os dois módulos ilustram, na notação das
+      notas da disciplina. Os módulos trazem só o resumo de dois ou três parágrafos, para o
+      enunciado ficar ao alcance dos olhos enquanto o slider se move; quem quiser o enunciado
+      inteiro encontra aqui.
+    </p>
+  </div>
+
+  <h2>Notação</h2>
+
+  <ul class="lista-notacao">
+    <li>
+      <span class="simbolo math" data-math="[-L,\,L]"></span>
+      <span class="glosa">Intervalo genérico. A função é <span class="math" data-math="2L"></span>-periódica.</span>
+    </li>
+    <li>
+      <span class="simbolo math" data-math="\psi_n(x)=\cos\!\left(\tfrac{n\pi x}{L}\right),\;\; n\ge 0"></span>
+      <span class="glosa">Parte par da base trigonométrica.</span>
+    </li>
+    <li>
+      <span class="simbolo math" data-math="\varphi_k(x)=\sin\!\left(\tfrac{k\pi x}{L}\right),\;\; k\ge 1"></span>
+      <span class="glosa">Parte ímpar da base trigonométrica.</span>
+    </li>
+    <li>
+      <span class="simbolo math" data-math="\langle f,g\rangle=\int_{-L}^{L} f\,g"></span>
+      <span class="glosa">Produto interno.</span>
+    </li>
+    <li>
+      <span class="simbolo math" data-math="a_n=\tfrac1L\langle f,\psi_n\rangle,\quad b_k=\tfrac1L\langle f,\varphi_k\rangle"></span>
+      <span class="glosa">Coeficientes reais.</span>
+    </li>
+    <li>
+      <span class="simbolo math" data-math="\widehat{f}(\pm n)=\dfrac{a_n \mp i\,b_n}{2}"></span>
+      <span class="glosa">Coeficiente complexo.</span>
+    </li>
+  </ul>
+
+  <div class="aviso-notacao">
+    <strong>Escreve-se <span class="math" data-math="\widehat{f}(n)"></span>, nunca
+    <span class="math" data-math="c_n"></span>.</strong>
+    Da mesma forma, o intervalo é <span class="math" data-math="[-L,L]"></span> e não
+    <span class="math" data-math="[0,2\pi]"></span>, e a série leva
+    <span class="math" data-math="a_0/2"></span> no primeiro termo. Os três desvios são comuns em
+    livros-texto e fariam o material parecer estrangeiro ao curso.
+  </div>
+
+  <h2>A série, nas duas formas</h2>
+
+  <div class="verbete">
+    <h3>Forma real</h3>
+    <div class="formula" data-math-display="S_f \;=\; \frac{a_0}{2} \;+\; \sum_{n\ge 1}\bigl(a_n\,\psi_n + b_n\,\varphi_n\bigr)"></div>
+    <p>
+      O termo constante entra como <span class="math" data-math="a_0/2"></span> para que a fórmula
+      de <span class="math" data-math="a_n"></span> valha uniformemente, inclusive em
+      <span class="math" data-math="n=0"></span>.
+    </p>
+  </div>
+
+  <div class="verbete">
+    <h3>Forma complexa</h3>
+    <div class="formula" data-math-display="S_f \;=\; \sum_{n=-\infty}^{\infty}\widehat{f}(n)\,e^{i n\pi x/L}"></div>
+    <p>A relação de ortogonalidade das exponenciais é</p>
+    <div class="formula" data-math-display="\bigl\langle e^{i n\pi x/L},\, e^{i m\pi x/L}\bigr\rangle \;=\; 2L\,\delta_{-n,\,m},"></div>
+    <p>e portanto o coeficiente se recupera por</p>
+    <div class="formula" data-math-display="\widehat{f}(n) \;=\; \frac{1}{2L}\bigl\langle f,\, e^{-i n\pi x/L}\bigr\rangle."></div>
+    <p>
+      É esta forma que o módulo de epiciclos usa: cada parcela
+      <span class="math" data-math="\widehat{f}(n)\,e^{in\pi x/L}"></span> é um vetor de módulo
+      <span class="math" data-math="|\widehat{f}(n)|"></span> girando com velocidade angular
+      <span class="math" data-math="n"></span>.
+    </p>
+  </div>
+
+  <div class="verbete">
+    <h3>Identidade de Parseval</h3>
+    <div class="formula" data-math-display="\frac{1}{2L}\,\|f\|^{2} \;=\; \sum_{n=-\infty}^{\infty}\bigl|\widehat{f}(n)\bigr|^{2}"></div>
+    <p>
+      É a identidade que transforma "quanto falta para a série reproduzir
+      <span class="math" data-math="f"></span>" numa conta sobre coeficientes. Truncando em
+      <span class="math" data-math="|n|\le M"></span>, o erro relativo da reconstrução é a raiz da
+      fração da energia que ficou na cauda:
+    </p>
+    <div class="formula" data-math-display="\mathrm{err}(M) \;=\; \frac{\Bigl(\sum_{|n|>M}|\widehat{f}(n)|^{2}\Bigr)^{1/2}}{\Bigl(\sum_{n}|\widehat{f}(n)|^{2}\Bigr)^{1/2}}"></div>
+    <p>
+      O módulo de epiciclos exibe exatamente esse número — e não uma comparação ponto a ponto com
+      a curva — justamente para amarrar a métrica ao teorema.
+    </p>
+  </div>
+
+  <h2>Os dois teoremas em jogo</h2>
+
+  <div class="verbete">
+    <h3>Convergência uniforme</h3>
+    <div class="enunciado">
+      <span class="rotulo-teorema">Teorema</span>
+      <p class="sem-margem">
+        Se <span class="math" data-math="f"></span> é contínua e
+        <span class="math" data-math="2L"></span>-periódica, e <span class="math" data-math="f'"></span>
+        é seccionalmente contínua, então <span class="math" data-math="S_f"></span> converge
+        uniformemente para <span class="math" data-math="f"></span> em toda a reta.
+      </p>
+    </div>
+    <p>
+      A hipótese de continuidade não é decorativa. A <a href="convergencia.html">onda
+      triangular</a> a satisfaz e o erro máximo cai a zero. A onda quadrada é descontínua, e o que
+      acontece com ela é instrutivo em dois níveis. Primeiro, a norma do sup não diminui nunca:
+      toda soma parcial vale <span class="math" data-math="\pi/2"></span> no ponto de salto,
+      enquanto <span class="math" data-math="f"></span> vale <span class="math" data-math="\pi"></span>
+      ou <span class="math" data-math="0"></span>, de modo que
+      <span class="math" data-math="\|f-S_N\|_\infty=\pi/2"></span> para todo
+      <span class="math" data-math="N"></span>. Segundo, o overshoot logo depois do salto —
+      o fenômeno de Gibbs — estreita mas não encolhe, estacionando em
+      <span class="math" data-math="\mathrm{Si}(\pi)-\pi/2\approx 0{,}2811"></span>, ou seja
+      8,95% da altura do salto.
+    </p>
+    <p>
+      A convergência ainda é pontual: <span class="math" data-math="S_f(x)\to f(x)"></span> em todo
+      ponto exceto nos da forma <span class="math" data-math="n\pi"></span>. Pontual sem ser
+      uniforme é precisamente a distinção que o teorema faz.
+    </p>
+  </div>
+
+  <div class="verbete">
+    <h3>Decaimento dos coeficientes</h3>
+    <p>Derivar multiplica o coeficiente por uma potência de <span class="math" data-math="n"></span>:</p>
+    <div class="formula" data-math-display="\widehat{f}^{\,(k)}(n) \;=\; \left(\frac{i n\pi}{L}\right)^{\!k}\widehat{f}(n)"></div>
+    <div class="enunciado">
+      <span class="rotulo-teorema">Corolário</span>
+      <p class="sem-margem">
+        Se <span class="math" data-math="f"></span> tem <span class="math" data-math="k"></span>
+        derivadas, então <span class="math" data-math="n^{k}\,\widehat{f}(n)\to 0"></span> quando
+        <span class="math" data-math="|n|\to\infty"></span>.
+      </p>
+    </div>
+    <p>
+      Como o lado esquerdo é o coeficiente de uma função integrável, ele tende a zero — e
+      quanto mais lisa a função, mais rápido o espectro morre. O corolário, porém, é
+      <em>qualitativo</em>: diz que decai, não a que taxa. O módulo de epiciclos mede a taxa
+      numericamente, ajustando uma reta em
+      <span class="math" data-math="(\log n,\;\log|\widehat{f}(n)|)"></span>, e confere a previsão
+      em curvas cujas singularidades são conhecidas de antemão.
+    </p>
+  </div>
+
+  <h2>Por que reparametrizar por comprimento de arco</h2>
+
+  <div class="verbete">
+    <p>
+      Uma curva fechada no plano não tem uma parametrização canônica: a mesma figura admite
+      infinitas, e cada uma produz um conjunto diferente de coeficientes. Medir o decaimento numa
+      parametrização arbitrária mede a parametrização, não a geometria.
+    </p>
+    <p>
+      A astroide é o exemplo que fecha o argumento. Na parametrização usual
+      <span class="math" data-math="(\cos^3 s,\;\sin^3 s)"></span> ela é, exatamente,
+    </p>
+    <div class="formula" data-math-display="z(s)\;=\;\tfrac34\,e^{is}\;+\;\tfrac14\,e^{-3is}"></div>
+    <p>
+      — dois termos, espectro finito, quatro cúspides reconstruídas com precisão de máquina por
+      dois círculos. Reparametrizada por comprimento de arco, a mesma curva passa a decair como
+      <span class="math" data-math="n^{-2}"></span>: na cúspide a tangente se inverte, e em arco
+      isso é um bico, <span class="math" data-math="x\approx 1-|\sigma|"></span>. O espectro finito
+      era uma propriedade da fórmula escolhida, não das cúspides.
+    </p>
+    <p>
+      Por isso o módulo reamostra em pontos equiespaçados <em>em arco</em> antes de calcular a
+      transformada, e oferece um controle para desligar essa etapa — desligá-la é uma demonstração
+      por si só.
+    </p>
+  </div>
+
+  <footer class="rodape">
+    <p>
+      As definições seguem as notas da disciplina de Cálculo 4 do ICMC-USP. Qualquer divergência
+      de notação nesta página é erro meu, não das notas.
+    </p>
+  </footer>
+
+</div>
+
+<script src="vendor/katex/katex.min.js"></script>
+<script src="js/formulas.js"></script>
+<script>
+  (function () {
+    function iniciar() { Formulas.renderizar(); }
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', iniciar);
+    } else { iniciar(); }
+  })();
+</script>
+</body>
+</html>

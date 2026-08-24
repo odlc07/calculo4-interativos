@@ -1,0 +1,608 @@
+/* base.css — tokens, tipografia e layout compartilhados.
+ *
+ * Direção: o site vai ficar ao lado de gifs de gnuplot numa página do ICMC.
+ * Fundo claro sóbrio, um único tom de destaque frio, cinza para tudo que é
+ * estrutura ou referência. Nada de gradiente, sombra, cartão flutuante ou
+ * animação de entrada. O elemento memorável é o canvas; o resto fica quieto.
+ *
+ * LAYOUT — a página inteira é centralizada na janela, e tudo dentro dela
+ * compartilha uma única margem à esquerda. A prosa fica numa coluna curta
+ * (~70 caracteres, a medida confortável de leitura); os canvas e os painéis se
+ * espalham por toda a largura. É o arranjo dos artigos técnicos: texto estreito,
+ * figura larga, um só eixo vertical amarrando os dois.
+ *
+ * O texto é alinhado à esquerda, não justificado nem centralizado. Justificar
+ * numa coluna estreita abre rios de espaço em branco; centralizar prosa de
+ * vários parágrafos destrói a margem esquerda de onde o olho recomeça cada
+ * linha. Fórmulas em bloco e legendas de canvas, sim, ficam centralizadas —
+ * são elementos isolados, não texto corrido.
+ */
+
+:root {
+  /* superfícies e tinta */
+  --fundo:        #fbfbf9;
+  --papel:        #ffffff;
+  --tinta:        #16181a;
+  --tinta-media:  #454c50;
+  --tinta-fraca:  #6b7175;
+  --linha:        #e2e2db;
+  --linha-forte:  #c8c8c0;
+
+  /* único tom de destaque, frio: traço da reconstrução e foco */
+  --destaque:       #16606e;
+  --destaque-claro: #eaf3f5;
+
+  /* cinzas do desenho */
+  --grafico-eixo:      #b4b4ac;
+  --grafico-grade:     #ebebe4;
+  --grafico-referencia:#8d9396;
+  --grafico-limite:    #a3282a;
+
+  --serif: Charter, "Bitstream Charter", "Iowan Old Style", Georgia, "Times New Roman", serif;
+  --sans: "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --mono: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+
+  --medida:  36rem;   /* coluna de prosa */
+  --largura: 58rem;   /* largura total da página */
+
+  /* escala de espaçamento — todo respiro vertical sai daqui */
+  --e1: .25rem;
+  --e2: .5rem;
+  --e3: .875rem;
+  --e4: 1.25rem;
+  --e5: 2rem;
+  --e6: 3rem;
+  --e7: 4.5rem;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --fundo:        #16181a;
+    --papel:        #1d2023;
+    --tinta:        #e8e8e4;
+    --tinta-media:  #b6bbbe;
+    --tinta-fraca:  #9aa0a4;
+    --linha:        #2f3438;
+    --linha-forte:  #464c50;
+    --destaque:       #6fc3d2;
+    --destaque-claro: #1b2d31;
+    --grafico-eixo:      #565c60;
+    --grafico-grade:     #26292c;
+    --grafico-referencia:#7e858a;
+    --grafico-limite:    #e8908f;
+  }
+}
+
+* { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  padding: var(--e6) var(--e4) var(--e7);
+  background: var(--fundo);
+  color: var(--tinta);
+  font-family: var(--serif);
+  font-size: 17px;
+  line-height: 1.7;
+  text-rendering: optimizeLegibility;
+}
+
+.pagina { max-width: var(--largura); margin: 0 auto; }
+
+/* A coluna de prosa. Tudo que é texto corrido herda esta largura e a margem
+   esquerda da página; nada disso é centralizado. */
+.introducao,
+.nota,
+.verbete,
+.lista-notacao,
+.aviso-notacao,
+.rodape,
+.coluna { max-width: var(--medida); }
+
+/* ---- navegação ---------------------------------------------------------- */
+
+.navegacao {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--e1) var(--e4);
+  font-family: var(--sans);
+  font-size: .82rem;
+  padding-bottom: var(--e3);
+  margin-bottom: var(--e6);
+  border-bottom: 1px solid var(--linha);
+}
+.navegacao a {
+  color: var(--tinta-fraca);
+  text-decoration: none;
+  padding: var(--e1) 0;
+  border-bottom: 2px solid transparent;
+  transition: color .12s ease;
+}
+.navegacao a:hover { color: var(--tinta); }
+.navegacao a[aria-current="page"] {
+  color: var(--tinta);
+  font-weight: 600;
+  border-bottom-color: var(--destaque);
+}
+.navegacao a:focus-visible { outline: 2px solid var(--destaque); outline-offset: 3px; }
+.navegacao .marca-site {
+  font-weight: 600;
+  color: var(--tinta);
+  margin-right: auto;
+  letter-spacing: -.01em;
+}
+.navegacao .pendente { color: var(--tinta-fraca); opacity: .5; padding: var(--e1) 0; }
+
+/* ---- cabeçalho ---------------------------------------------------------- */
+
+.cabecalho { margin-bottom: var(--e6); }
+
+.disciplina {
+  font-family: var(--sans);
+  font-size: .72rem;
+  font-weight: 600;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--tinta-fraca);
+  margin: 0 0 var(--e3);
+}
+
+h1 {
+  font-size: 2.1rem;
+  font-weight: 600;
+  line-height: 1.18;
+  letter-spacing: -.021em;
+  text-wrap: balance;
+  margin: 0;
+  max-width: 26rem;
+}
+
+/* ---- texto corrido ------------------------------------------------------ */
+
+.introducao p { margin: 0 0 var(--e4); }
+.introducao p:last-child { margin-bottom: 0; }
+
+.destaque-texto { color: var(--tinta); font-weight: 600; }
+
+/* Rótulo de seção: uma régua fina atravessando a página, e o nome miúdo logo
+   abaixo dela, à esquerda. Separa sem pesar. */
+h2 {
+  font-family: var(--sans);
+  font-size: .74rem;
+  font-weight: 600;
+  letter-spacing: .13em;
+  text-transform: uppercase;
+  color: var(--tinta-fraca);
+  margin: var(--e7) 0 var(--e5);
+  padding-top: var(--e3);
+  border-top: 1px solid var(--linha);
+}
+
+h3 {
+  font-family: var(--sans);
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: -.005em;
+  margin: 0;
+}
+
+.nota {
+  font-size: .89rem;
+  line-height: 1.65;
+  color: var(--tinta-fraca);
+  margin: var(--e4) 0 0;
+}
+
+code {
+  font-family: var(--mono);
+  font-size: .86em;
+  color: var(--tinta-media);
+}
+
+a { color: var(--destaque); }
+
+/* ---- controles ---------------------------------------------------------- */
+
+.controles {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--e3) var(--e5);
+  background: var(--papel);
+  border: 1px solid var(--linha);
+  border-left: 3px solid var(--destaque);
+  padding: var(--e4) var(--e4);
+}
+.controles + .controles { margin-top: var(--e2); }
+
+.controle { display: flex; align-items: center; gap: var(--e3); flex: 1 1 22rem; }
+
+.controle label {
+  font-family: var(--sans);
+  font-size: .85rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+input[type="range"] {
+  flex: 1;
+  min-width: 7rem;
+  accent-color: var(--destaque);
+  height: 1.5rem;
+}
+input[type="range"]:focus-visible { outline: 2px solid var(--destaque); outline-offset: 3px; }
+
+button {
+  font-family: var(--sans);
+  font-size: .85rem;
+  padding: var(--e2) var(--e3);
+  color: var(--tinta);
+  background: var(--papel);
+  border: 1px solid var(--linha-forte);
+  border-radius: 2px;
+  cursor: pointer;
+  transition: border-color .12s ease, color .12s ease;
+}
+button:hover { border-color: var(--destaque); }
+button:focus-visible { outline: 2px solid var(--destaque); outline-offset: 2px; }
+
+.valor-controle {
+  font-family: var(--sans);
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+  font-size: .95rem;
+  min-width: 3.5ch;
+  text-align: right;
+}
+
+/* ---- seletor de curva --------------------------------------------------- */
+
+.seletor { display: flex; flex-wrap: wrap; gap: var(--e2); }
+
+.botao-curva {
+  font-family: var(--sans);
+  font-size: .82rem;
+  padding: var(--e2) var(--e3);
+  color: var(--tinta-media);
+  background: var(--papel);
+  border: 1px solid var(--linha-forte);
+  border-radius: 2px;
+  cursor: pointer;
+}
+.botao-curva:hover { border-color: var(--destaque); color: var(--tinta); }
+.botao-curva:focus-visible { outline: 2px solid var(--destaque); outline-offset: 2px; }
+.botao-curva[aria-pressed="true"] {
+  color: var(--destaque);
+  border-color: var(--destaque);
+  background: var(--destaque-claro);
+  font-weight: 600;
+}
+
+.opcao { display: flex; align-items: center; gap: var(--e2); font-family: var(--sans); font-size: .85rem; }
+.opcao input[type="checkbox"] { width: 1rem; height: 1rem; accent-color: var(--destaque); cursor: pointer; }
+.opcao input[type="checkbox"]:focus-visible { outline: 2px solid var(--destaque); outline-offset: 2px; }
+.opcao label { cursor: pointer; }
+
+/* ---- painéis e canvas --------------------------------------------------- */
+
+.paineis {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--e5);
+  align-items: start;
+  margin-top: var(--e5);
+}
+@media (max-width: 860px) { .paineis { grid-template-columns: 1fr; } }
+
+.quadro {
+  background: var(--papel);
+  border: 1px solid var(--linha);
+  padding: var(--e4) var(--e4) var(--e4);
+}
+
+.painel-cabeca {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--e1) var(--e3);
+  margin-bottom: var(--e3);
+}
+
+.marcador {
+  font-family: var(--sans);
+  font-size: .66rem;
+  font-weight: 600;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  padding: .1rem .4rem;
+  border: 1px solid currentColor;
+  border-radius: 2px;
+}
+.marcador.satisfaz     { color: var(--destaque); }
+.marcador.nao-satisfaz { color: var(--grafico-limite); }
+
+canvas { display: block; width: 100%; background: transparent; }
+canvas:focus-visible { outline: 2px solid var(--destaque); outline-offset: 2px; }
+
+.canvas-funcao   { height: 250px; }
+.canvas-erro     { height: 148px; }
+.canvas-palco    { height: 440px; }
+.canvas-espectro { height: 260px; }
+
+.subtitulo-grafico {
+  font-family: var(--sans);
+  font-size: .72rem;
+  letter-spacing: .04em;
+  color: var(--tinta-fraca);
+  margin: var(--e5) 0 var(--e1);
+}
+
+.legenda {
+  font-family: var(--sans);
+  font-size: .74rem;
+  color: var(--tinta-fraca);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--e1) var(--e4);
+  margin-top: var(--e3);
+}
+.legenda .amostra {
+  display: inline-block;
+  width: 1.4rem;
+  height: 0;
+  border-top-width: 2px;
+  border-top-style: solid;
+  vertical-align: middle;
+  margin-right: var(--e1);
+}
+.legenda .amostra.exata  { border-top-color: var(--grafico-referencia); border-top-width: 1px; }
+.legenda .amostra.serie  { border-top-color: var(--destaque); }
+.legenda .amostra.limite { border-top-color: var(--grafico-limite); border-top-style: dashed; }
+.legenda .amostra.corte  { border-top-color: var(--destaque); border-top-style: dashed; }
+
+/* ---- indicadores numéricos ---------------------------------------------- */
+
+.indicadores {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(8.5rem, 1fr));
+  gap: var(--e3) var(--e5);
+  margin-top: var(--e4);
+  padding-top: var(--e3);
+  border-top: 1px solid var(--linha);
+}
+.indicador .rotulo {
+  display: block;
+  font-family: var(--sans);
+  font-size: .7rem;
+  letter-spacing: .05em;
+  color: var(--tinta-fraca);
+  margin-bottom: var(--e1);
+}
+.indicador .numero {
+  display: block;
+  font-family: var(--sans);
+  font-variant-numeric: tabular-nums;
+  font-size: 1.2rem;
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: -.015em;
+}
+.indicador .numero.estavel { color: var(--grafico-limite); }
+/* Indicador cujo conteúdo é texto, não número: cabe mais palavra em corpo menor. */
+.indicador .numero.texto { font-size: .92rem; font-weight: 600; line-height: 1.35; }
+.indicador .apoio {
+  display: block;
+  font-family: var(--sans);
+  font-size: .7rem;
+  color: var(--tinta-fraca);
+  margin-top: var(--e1);
+}
+
+/* ---- cartões da página inicial ------------------------------------------ */
+
+.cartoes {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(19rem, 1fr));
+  gap: var(--e5);
+}
+.cartao {
+  display: flex;
+  flex-direction: column;
+  background: var(--papel);
+  border: 1px solid var(--linha);
+}
+.miniatura { height: 150px; border-bottom: 1px solid var(--linha); }
+.cartao-corpo { padding: var(--e4); display: flex; flex-direction: column; flex: 1; }
+.cartao-corpo .subtitulo-cartao {
+  font-family: var(--sans);
+  font-size: .7rem;
+  font-weight: 600;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--tinta-fraca);
+  margin: 0 0 var(--e1);
+}
+.cartao-corpo .titulo {
+  font-family: var(--sans);
+  font-size: 1.12rem;
+  font-weight: 600;
+  letter-spacing: -.015em;
+  margin: 0 0 var(--e3);
+}
+.cartao-corpo p { margin: 0 0 var(--e4); font-size: .93rem; line-height: 1.6; }
+.cartao-corpo .acao {
+  margin-top: auto;
+  align-self: flex-start;
+  font-family: var(--sans);
+  font-size: .85rem;
+  font-weight: 600;
+  color: var(--destaque);
+  text-decoration: none;
+  border-bottom: 1px solid currentColor;
+  padding-bottom: 1px;
+}
+.cartao-corpo .acao:focus-visible { outline: 2px solid var(--destaque); outline-offset: 3px; }
+
+/* ---- página de teoria --------------------------------------------------- */
+
+.verbete {
+  padding-bottom: var(--e5);
+  margin-bottom: var(--e5);
+  border-bottom: 1px solid var(--linha);
+}
+.verbete:last-child { border-bottom: 0; padding-bottom: 0; margin-bottom: 0; }
+.verbete h3 { font-size: 1.05rem; margin-bottom: var(--e3); }
+.verbete p { margin: 0 0 var(--e4); }
+.verbete p:last-child { margin-bottom: 0; }
+
+.enunciado {
+  border-left: 3px solid var(--destaque);
+  background: var(--papel);
+  padding: var(--e3) var(--e4);
+  margin: var(--e4) 0;
+}
+.enunciado .sem-margem { margin: 0; }
+.enunciado .rotulo-teorema {
+  display: block;
+  font-family: var(--sans);
+  font-size: .68rem;
+  font-weight: 600;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--destaque);
+  margin-bottom: var(--e2);
+}
+
+.lista-notacao { margin: 0; padding: 0; list-style: none; }
+.lista-notacao li {
+  padding: var(--e3) 0;
+  border-bottom: 1px solid var(--linha);
+}
+.lista-notacao li:last-child { border-bottom: 0; }
+.lista-notacao .simbolo {
+  display: block;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding-bottom: var(--e1);
+}
+.lista-notacao .glosa {
+  display: block;
+  font-size: .88rem;
+  color: var(--tinta-fraca);
+  margin-top: var(--e2);
+}
+
+.aviso-notacao {
+  border-left: 3px solid var(--grafico-limite);
+  background: var(--papel);
+  padding: var(--e3) var(--e4);
+  margin: var(--e5) 0;
+  font-size: .92rem;
+  line-height: 1.6;
+}
+.aviso-notacao strong { color: var(--grafico-limite); }
+
+/* ---- identidades numéricas ---------------------------------------------- */
+
+.identidades {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+  gap: var(--e5);
+}
+.identidade {
+  background: var(--papel);
+  border: 1px solid var(--linha);
+  padding: var(--e4);
+}
+.identidade .origem {
+  display: block;
+  font-family: var(--sans);
+  font-size: .68rem;
+  font-weight: 600;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--tinta-fraca);
+  margin-bottom: var(--e2);
+}
+.identidade .formula { margin: var(--e1) 0 var(--e4); }
+
+/* As duas linhas ficam alinhadas dígito a dígito, uma sobre a outra: é assim
+   que se enxerga até onde a soma parcial já coincide com o valor exato. */
+.linha-numero {
+  display: flex;
+  align-items: baseline;
+  gap: var(--e3);
+  font-family: var(--mono);
+  font-size: .84rem;
+  font-variant-numeric: tabular-nums;
+  padding: var(--e1) 0;
+}
+.linha-numero .rotulo {
+  font-family: var(--sans);
+  font-size: .68rem;
+  color: var(--tinta-fraca);
+  min-width: 6rem;
+  flex: none;
+}
+.linha-numero .valor { color: var(--tinta-media); letter-spacing: -.01em; }
+.linha-numero .valor .coincide { color: var(--destaque); font-weight: 700; }
+.linha-numero.exato .valor { color: var(--tinta); }
+.identidade .casas {
+  font-family: var(--sans);
+  font-size: .7rem;
+  color: var(--tinta-fraca);
+  margin: var(--e3) 0 0;
+}
+
+/* ---- rodapé ------------------------------------------------------------- */
+
+.rodape {
+  margin-top: var(--e7);
+  padding-top: var(--e4);
+  border-top: 1px solid var(--linha);
+  font-size: .87rem;
+  line-height: 1.6;
+  color: var(--tinta-fraca);
+}
+.rodape p { margin: 0; }
+.rodape p + p { margin-top: var(--e2); }
+.autoria-tecnica { font-size: .82rem; }
+
+/* ---- KaTeX -------------------------------------------------------------- */
+
+.katex { font-size: 1.02em; }
+
+/* Fórmula em bloco: isolada e centralizada. O KaTeX já centraliza o
+   .katex-display; aqui só entra o respiro e a rolagem lateral em telas
+   estreitas, para uma expressão longa não estourar o layout. */
+.formula {
+  margin: var(--e4) 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: var(--e1) 0;
+}
+.formula-crua { font-family: var(--mono); font-size: .85em; color: var(--tinta-media); }
+
+/* ---- responsivo --------------------------------------------------------- */
+
+@media (max-width: 720px) {
+  body { padding: var(--e5) var(--e4) var(--e6); font-size: 16px; }
+  h1 { font-size: 1.6rem; }
+  h2 { margin-top: var(--e6); }
+  .controle { flex-basis: 100%; }
+  .canvas-palco { height: 340px; }
+  .canvas-espectro { height: 220px; }
+}
+
+@media (max-width: 480px) {
+  body { padding: var(--e5) var(--e3) var(--e6); }
+  .canvas-funcao { height: 200px; }
+  .canvas-erro   { height: 130px; }
+  .quadro { padding: var(--e3); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; }
+}
