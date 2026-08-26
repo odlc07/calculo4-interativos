@@ -1228,6 +1228,47 @@
       return linhas.join('; ');
     });
 
+  teste('Rearranjo', 'Toda travessia do alvo sobra menos que o termo que a causou',
+    function () {
+      /* É esta a propriedade que faz a construção de Riemann funcionar, e ela se
+       * lê direto nas somas parciais: o algoritmo só troca de lista depois de
+       * passar do alvo, então logo após uma travessia a distância até o alvo é
+       * menor que o passo que acabou de ser dado. Como a_k → 0, as sobras vão a
+       * zero — e é por isso que a soma converge para o alvo em vez de orbitá-lo.
+       *
+       * Verificado só a partir das somas parciais, sem repetir o algoritmo aqui:
+       * o termo usado no passo k é a própria diferença somas[k] − somas[k−1]. */
+      var h = global.Reordenacao.porId('harmonica');
+      var linhas = [];
+      var travessias = 0;
+      [0, 1, 3, -2].forEach(function (alvo) {
+        var r = global.Reordenacao.guloso(h, alvo, 60000);
+        var piorCedo = 0, piorTarde = 0;
+        var cedo = Math.round(r.K * 0.1), tarde = Math.round(r.K * 0.9);
+        for (var k = 1; k < r.K; k++) {
+          var antes = r.somas[k - 1], agora = r.somas[k];
+          var cruzou = (antes > alvo && agora <= alvo) || (antes <= alvo && agora > alvo);
+          if (!cruzou) continue;
+          travessias++;
+          var termo = Math.abs(agora - antes);
+          var sobra = Math.abs(agora - alvo);
+          ok(sobra <= termo + 1e-15,
+             'alvo ' + alvo + ', termo ' + k + ': sobrou ' + fmt(sobra) +
+             ' passando do termo ' + fmt(termo));
+          if (k <= cedo && sobra > piorCedo) piorCedo = sobra;
+          if (k >= tarde && sobra > piorTarde) piorTarde = sobra;
+        }
+        /* E as sobras precisam encolher: se ficassem do mesmo tamanho, a soma
+         * oscilaria em torno do alvo para sempre sem convergir a ele. */
+        ok(piorTarde < piorCedo / 5,
+           'alvo ' + alvo + ': a sobra não encolheu — ' + fmt(piorCedo) +
+           ' no primeiro décimo contra ' + fmt(piorTarde) + ' no último');
+        linhas.push(alvo + ': ' + fmt(piorCedo) + ' → ' + fmt(piorTarde));
+      });
+      return travessias.toLocaleString('pt-BR') + ' travessias; maior sobra no ' +
+             'primeiro décimo → no último, por alvo: ' + linhas.join('; ');
+    });
+
   teste('Rearranjo', 'Absolutamente convergente: reordenar não move nada, e o guloso trava',
     function () {
       var q = global.Reordenacao.porId('quadrados');

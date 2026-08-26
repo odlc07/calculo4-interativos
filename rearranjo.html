@@ -216,6 +216,29 @@
     </p>
 
     <p>
+      <strong>Ultrapassar o alvo é o mecanismo, não um defeito.</strong> Olhando de perto — e o
+      gráfico da cauda existe para isso —, as somas parciais não param sobre a linha do alvo:
+      elas a cruzam, para os dois lados, sempre. Tem de ser assim. O algoritmo só troca de
+      lista <em>depois</em> de passar do alvo, e então cada travessia sobra exatamente pelo
+      tamanho do termo que a causou — se a soma estava acima e o próximo negativo a levou
+      abaixo, ela fica abaixo por menos que aquele termo. Como
+      <span class="math" data-math="a_k\to0"></span>, as sobras encolhem junto, e é essa sobra
+      que encolhe que faz o rearranjo convergir. Uma soma parcial que parasse exatamente no
+      alvo teria acertado por acaso.
+    </p>
+
+    <p>
+      <strong>A serra é assimétrica</strong>, e a assimetria é a proporção
+      <span class="math" data-math="p{:}q"></span> do indicador, vista de lado. Com alvo
+      <span class="math" data-math="0"></span> o algoritmo gasta quatro negativos para cada
+      positivo, então os positivos de que ele dispõe são cerca de quatro vezes maiores: um
+      salto grande para cima, depois quatro degraus pequenos descendo através do zero — e o
+      mergulho abaixo da linha é o menor dos dois lados. Com alvo
+      <span class="math" data-math="3"></span> é o contrário, cem positivos por negativo, e a
+      serra desce muito mais do que sobe.
+    </p>
+
+    <p>
       <strong>O caso <span class="math" data-math="1{:}4"></span> é o mais desconfortável.</strong>
       Um positivo para cada quatro negativos dá
       <span class="math" data-math="\ln 2+\tfrac12\ln(1/4)=\ln 2-\ln 2=0"></span>. Todos os
