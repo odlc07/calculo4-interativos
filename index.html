@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="utf-8">
-<meta name="description" content="Quatro módulos interativos sobre convergência: séries de Fourier, sequências recursivas e funções geratrizes, para a disciplina de Cálculo 4 do ICMC-USP.">
+<meta name="description" content="Seis módulos interativos sobre convergência: séries de Fourier, sequências recursivas, funções geratrizes, a equação do calor e o rearranjo de Riemann, para a disciplina de Cálculo 4 do ICMC-USP.">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Convergência e decaimento em séries de Fourier — Cálculo 4</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2032%2032%22%3E%3Ccircle%20cx%3D%2213%22%20cy%3D%2216%22%20r%3D%229%22%20fill%3D%22none%22%20stroke%3D%22%2316606e%22%20stroke-width%3D%222%22%2F%3E%3Ccircle%20cx%3D%2222%22%20cy%3D%2216%22%20r%3D%224.5%22%20fill%3D%22none%22%20stroke%3D%22%239aa0a4%22%20stroke-width%3D%221.6%22%2F%3E%3Ccircle%20cx%3D%2226.5%22%20cy%3D%2216%22%20r%3D%222.6%22%20fill%3D%22%2316606e%22%2F%3E%3C%2Fsvg%3E">
@@ -20,6 +20,8 @@
     <a href="epiciclos.html">Epiciclos</a>
     <a href="teia.html">Teia</a>
     <a href="geratriz.html">Geratriz</a>
+    <a href="calor.html">Calor</a>
+    <a href="rearranjo.html">Rearranjo</a>
   </nav>
 
   <header class="cabecalho capa">
@@ -27,7 +29,7 @@
     <h1>Convergência e decaimento em séries de Fourier</h1>
     <div class="introducao">
       <p>
-        Quatro módulos interativos sobre convergência. A diferença em relação a uma animação
+        Seis módulos interativos sobre convergência. A diferença em relação a uma animação
         em laço é que aqui <span class="destaque-texto">o aluno controla o parâmetro</span>: dá
         para parar num valor, comparar dois números lado a lado e voltar atrás — que é o que
         uma patologia de convergência exige para ser percebida.
@@ -110,14 +112,53 @@
       </div>
     </article>
 
+    <article class="cartao">
+      <canvas id="mini-calor" class="miniatura"
+              aria-label="Miniatura do módulo do calor: a onda quadrada em cinza com seus saltos, e a solução num instante posterior em azul, já sem salto algum."></canvas>
+      <div class="cartao-corpo">
+        <p class="subtitulo-cartao">Módulo 5</p>
+        <h3 class="titulo">A equação do calor</h3>
+        <p>
+          A onda quadrada do módulo 2, agora como temperatura inicial num anel. O fator
+          <span class="math" data-math="e^{-\alpha n^{2}t}"></span> é uma gaussiana no índice
+          <span class="math" data-math="n"></span>: para qualquer
+          <span class="math" data-math="t>0"></span> ele derruba a cauda do espectro mais
+          rápido que qualquer potência. Um botão troca para a equação da onda, que tem os
+          mesmos coeficientes e não suaviza nada.
+        </p>
+        <a class="acao" href="calor.html">Abrir módulo</a>
+      </div>
+    </article>
+
+    <article class="cartao">
+      <canvas id="mini-rearranjo" class="miniatura"
+              aria-label="Miniatura do módulo de rearranjo: as somas parciais serpenteando em azul até se fecharem sobre a linha tracejada do alvo escolhido."></canvas>
+      <div class="cartao-corpo">
+        <p class="subtitulo-cartao">Módulo 6</p>
+        <h3 class="titulo">Rearranjo de séries</h3>
+        <p>
+          Escolha um número e o rearranjo da harmônica alternada converge para ele. Em
+          blocos de <span class="math" data-math="p"></span> positivos para
+          <span class="math" data-math="q"></span> negativos a soma é
+          <span class="math" data-math="\ln 2+\tfrac12\ln(p/q)"></span> — com
+          <span class="math" data-math="1{:}4"></span>, exatamente zero. Ao lado, a série
+          absolutamente convergente que não se move.
+        </p>
+        <a class="acao" href="rearranjo.html">Abrir módulo</a>
+      </div>
+    </article>
+
   </div>
 
   <h2>Índice por exercício</h2>
 
   <div class="introducao">
     <p>
-      Cada módulo nasceu de uma questão que já caiu. Quem está revisando um exercício
-      específico pode entrar direto pelo módulo que o responde visualmente.
+      Os quatro primeiros módulos nasceram de questões que já caíram. Quem está revisando um
+      exercício específico pode entrar direto pelo módulo que o responde visualmente. Os
+      módulos 5 e 6 não estão nesta tabela de propósito: não respondem a um exercício, e sim
+      às duas perguntas que a lista não faz — para que serve tudo isto, e o que se perde
+      quando a convergência não é absoluta.
     </p>
   </div>
 
@@ -183,6 +224,8 @@
 <script src="js/ondas.js"></script>
 <script src="js/polinomios.js"></script>
 <script src="js/iteracao.js"></script>
+<script src="js/difusao.js"></script>
+<script src="js/reordenacao.js"></script>
 <script src="js/plot.js"></script>
 <script src="js/index.js"></script>
 </body>

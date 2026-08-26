@@ -11,6 +11,7 @@
   var el = {};
   var pendente = false;
   var epiciclos = null;      // coeficientes da astroide, calculados uma vez
+  var rearranjo = null;      // somas parciais do rearranjo, calculadas uma vez
 
   var MARGEM = { esq: 6, dir: 6, topo: 8, base: 8 };
 
@@ -175,12 +176,80 @@
     });
   }
 
+  // ---- miniatura do módulo 5: o salto que deixa de existir ----------------
+  function miniaturaCalor(c) {
+    var a = global.Plot.ajustar(el.miniCalor);
+    var D = global.Difusao;
+    var cond = D.porId('quadrada');
+    var esc = global.Plot.escala({
+      w: a.w, h: a.h, margem: MARGEM,
+      x0: -1.05 * PI, x1: 1.05 * PI, y0: -0.8, y1: PI + 0.8
+    });
+
+    // a condição inicial, com os patamares separados nos saltos
+    var quebras = D.descontinuidades(cond, esc.x0, esc.x1);
+    var xsF = [], ysF = [], n = Math.max(240, Math.round(esc.pw * 2)), k = 0;
+    var eps = (esc.x1 - esc.x0) * 1e-7;
+    for (var i = 0; i <= n; i++) {
+      var x = esc.x0 + (esc.x1 - esc.x0) * i / n;
+      while (k < quebras.length && quebras[k] <= x) {
+        xsF.push(quebras[k] - eps, NaN, quebras[k] + eps);
+        ysF.push(cond.f(quebras[k] - eps), NaN, cond.f(quebras[k] + eps));
+        k++;
+      }
+      xsF.push(x); ysF.push(cond.f(x));
+    }
+    global.Plot.serie(a.ctx, esc, xsF, ysF, { cor: c.referencia, largura: 1 });
+
+    /* Um instante curto, e só: o suficiente para o salto virar rampa suave sem
+     * que a curva já tenha desabado sobre a média. */
+    var P = Math.max(320, Math.round(esc.pw * 2));
+    var xs = new Float64Array(P);
+    for (i = 0; i < P; i++) xs[i] = esc.x0 + (esc.x1 - esc.x0) * i / (P - 1);
+    var u = D.perfil(cond, 'calor', 96, 0.004, xs);
+    global.Plot.serie(a.ctx, esc, xs, u, { cor: c.destaque, largura: 1.7 });
+  }
+
+  // ---- miniatura do módulo 6: as somas parciais se fechando sobre o alvo ---
+  function miniaturaRearranjo(c) {
+    var a = global.Plot.ajustar(el.miniRe);
+    var R = global.Reordenacao;
+    var ALVO = 3;
+    if (!rearranjo) rearranjo = R.guloso(R.porId('harmonica'), ALVO, 40000);
+
+    var colunas = Math.max(30, Math.round(a.w - MARGEM.esq - MARGEM.dir));
+    var env = R.envelope(rearranjo.somas, 1, rearranjo.K, colunas, 'log');
+    var f = R.faixa(env, 0.12);
+    var esc = global.Plot.escala({
+      w: a.w, h: a.h, margem: MARGEM,
+      x0: 0, x1: Math.log10(rearranjo.K),
+      y0: Math.min(f.y0, ALVO - 0.4), y1: Math.max(f.y1, ALVO + 0.4)
+    });
+
+    a.ctx.save();
+    a.ctx.strokeStyle = c.destaque;
+    a.ctx.lineWidth = 1;
+    a.ctx.beginPath();
+    for (var col = 0; col < env.colunas; col++) {
+      if (env.vazio[col]) continue;
+      var px = Math.round(esc.margem.esq + esc.pw * col / (env.colunas - 1)) + 0.5;
+      a.ctx.moveTo(px, esc.py(Math.max(esc.y0, Math.min(esc.y1, env.min[col]))));
+      a.ctx.lineTo(px, esc.py(Math.max(esc.y0, Math.min(esc.y1, env.max[col]))) - 1);
+    }
+    a.ctx.stroke();
+    a.ctx.restore();
+
+    global.Plot.linhaH(a.ctx, esc, ALVO, { cor: c.limite, tracejado: [4, 3] });
+  }
+
   function desenhar() {
     var c = global.Plot.cores(document.body);
     if (el.miniConv) miniaturaConvergencia(c);
     if (el.miniEpi) miniaturaEpiciclos(c);
     if (el.miniTeia) miniaturaTeia(c);
     if (el.miniGer) miniaturaGeratriz(c);
+    if (el.miniCalor) miniaturaCalor(c);
+    if (el.miniRe) miniaturaRearranjo(c);
   }
 
   function agendar() {
@@ -194,6 +263,8 @@
     el.miniEpi = document.getElementById('mini-epiciclos');
     el.miniTeia = document.getElementById('mini-teia');
     el.miniGer = document.getElementById('mini-geratriz');
+    el.miniCalor = document.getElementById('mini-calor');
+    el.miniRe = document.getElementById('mini-rearranjo');
     global.Formulas.renderizar();
     global.addEventListener('resize', agendar);
     agendar();

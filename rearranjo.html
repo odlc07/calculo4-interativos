@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="description" content="Rearranjo de séries alternadas: escolha um alvo e veja a harmônica alternada convergir para ele, com a proporção de termos prevista em forma fechada — e a série absolutamente convergente que não se move.">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rearranjo: a soma que você escolher — Cálculo 4</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2032%2032%22%3E%3Ccircle%20cx%3D%2213%22%20cy%3D%2216%22%20r%3D%229%22%20fill%3D%22none%22%20stroke%3D%22%2316606e%22%20stroke-width%3D%222%22%2F%3E%3Ccircle%20cx%3D%2222%22%20cy%3D%2216%22%20r%3D%224.5%22%20fill%3D%22none%22%20stroke%3D%22%239aa0a4%22%20stroke-width%3D%221.6%22%2F%3E%3Ccircle%20cx%3D%2226.5%22%20cy%3D%2216%22%20r%3D%222.6%22%20fill%3D%22%2316606e%22%2F%3E%3C%2Fsvg%3E">
+<link rel="stylesheet" href="vendor/katex/katex.min.css">
+<link rel="stylesheet" href="css/base.css">
+</head>
+<body>
+<div class="pagina">
+
+  <nav class="navegacao" aria-label="Seções do site">
+    <span class="marca-site">Módulos Interativos — Cálculo 4 (SMA0356)</span>
+    <a href="index.html">Início</a>
+    <a href="teoria.html">Teoria</a>
+    <a href="convergencia.html">Convergência</a>
+    <a href="epiciclos.html">Epiciclos</a>
+    <a href="teia.html">Teia</a>
+    <a href="geratriz.html">Geratriz</a>
+    <a href="calor.html">Calor</a>
+    <a href="rearranjo.html" aria-current="page">Rearranjo</a>
+  </nav>
+
+  <header class="cabecalho">
+    <p class="disciplina">SMA0356 / SMA0803 — Módulo 6</p>
+    <h1>Rearranjo: a soma que você escolher</h1>
+  </header>
+
+  <p class="crenca-falsa">
+    <span class="crenca-rotulo">A crença que este módulo desfaz</span>
+    “Somar é comutativo. Os mesmos números, em outra ordem, dão a mesma soma —
+    numa soma infinita como em qualquer outra.”
+  </p>
+
+  <div class="introducao">
+    <p>
+      Uma série alternada se lê como <span class="destaque-texto">duas listas</span>: a dos
+      termos positivos e a dos negativos. Reordenar é escolher o ritmo com que se consome cada
+      uma. O que decide tudo é quanto cada lista soma sozinha.
+    </p>
+
+    <p>
+      Na harmônica alternada, cada uma delas diverge:
+      <span class="math" data-math="\sum_i 1/(2i-1)=\infty"></span> e
+      <span class="math" data-math="\sum_j 1/(2j)=\infty"></span>, ainda que juntas somem
+      <span class="math" data-math="\ln 2"></span>. Daí vem o poder do rearranjo: como a lista
+      dos positivos é inesgotável, dá para ultrapassar <em>qualquer</em> alvo; como a dos
+      negativos também é, dá para voltar. E como
+      <span class="math" data-math="a_k\to0"></span>, cada ultrapassagem é menor que a
+      anterior, e as somas parciais se fecham sobre o alvo.
+    </p>
+
+    <div class="enunciado">
+      <p class="rotulo-teorema">Teorema do rearranjo (Riemann)</p>
+      <p class="sem-margem">
+        Se <span class="math" data-math="\sum a_k"></span> converge mas não absolutamente,
+        então para todo <span class="math" data-math="S\in\mathbb{R}"></span> existe um
+        rearranjo de <span class="math" data-math="\sum a_k"></span> que converge para
+        <span class="math" data-math="S"></span>.
+      </p>
+    </div>
+
+    <p>
+      O contraste está a um botão de distância. A série
+      <span class="math" data-math="\sum(-1)^{k+1}/k^{2}"></span> converge
+      <em>absolutamente</em>: as duas listas somam valores finitos, nenhuma delas leva a soma
+      para longe, e todo rearranjo dá <span class="math" data-math="\pi^{2}/12"></span> —
+      é o teorema de Dirichlet. Trocar a série e mexer nos mesmos controles não move o limite
+      um dígito.
+    </p>
+
+    <p>
+      Há dois números fechados para conferir aqui, e é isso que separa este módulo de um truque
+      de salão. Tomando <span class="math" data-math="p"></span> positivos para cada
+      <span class="math" data-math="q"></span> negativos, a soma é
+      <span class="math" data-math="\ln 2+\tfrac12\ln(p/q)"></span> — com
+      <span class="math" data-math="p=1"></span> e <span class="math" data-math="q=4"></span>
+      isso dá <span class="destaque-texto">exatamente zero</span>. E no modo do alvo, a
+      proporção em que o algoritmo acaba consumindo as duas listas é
+      <span class="math" data-math="e^{2(S-\ln 2)}"></span>: ele não conhece essa fórmula —
+      só compara a soma com o alvo a cada passo — e mesmo assim cai em cima dela.
+    </p>
+  </div>
+
+  <div class="controles">
+    <div class="controle">
+      <label id="rotulo-serie">Série</label>
+      <div class="seletor" id="seletor-serie" role="group" aria-labelledby="rotulo-serie"></div>
+    </div>
+  </div>
+
+  <div class="controles">
+    <div class="controle">
+      <label id="rotulo-modo">Rearranjo</label>
+      <div class="seletor" id="seletor-modo" role="group" aria-labelledby="rotulo-modo">
+        <button type="button" class="botao-curva" data-modo="alvo" aria-pressed="true">Mirando um alvo</button>
+        <button type="button" class="botao-curva" data-modo="blocos" aria-pressed="false">Em blocos p:q</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="controles" id="controles-alvo">
+    <div class="campos">
+      <div class="campo">
+        <label for="campo-alvo">Alvo <span class="math" data-math="S"></span></label>
+        <input type="number" id="campo-alvo" value="3" step="0.25" min="-12" max="12">
+      </div>
+    </div>
+    <div class="seletor" id="atalhos-alvo" role="group" aria-label="Alvos prontos"></div>
+  </div>
+
+  <div class="controles" id="controles-blocos" hidden>
+    <div class="controle">
+      <label for="slider-p">Positivos <span class="math" data-math="p"></span></label>
+      <input type="range" id="slider-p" min="1" max="8" value="2" step="1">
+      <span class="valor-controle" id="valor-p">2</span>
+    </div>
+    <div class="controle">
+      <label for="slider-q">Negativos <span class="math" data-math="q"></span></label>
+      <input type="range" id="slider-q" min="1" max="8" value="1" step="1">
+      <span class="valor-controle" id="valor-q">1</span>
+    </div>
+  </div>
+
+  <div class="controles">
+    <div class="controle">
+      <label for="slider-k">Termos somados <span class="math" data-math="K"></span></label>
+      <input type="range" id="slider-k" min="0" max="1000" value="700" step="1">
+      <span class="valor-controle" id="valor-k">—</span>
+    </div>
+    <button type="button" id="botao-reset">valores iniciais</button>
+  </div>
+
+  <h2>As somas parciais</h2>
+
+  <div class="painel-cabeca">
+    <h3 id="titulo-somas">—</h3>
+    <span class="marcador" id="marcador-somas"></span>
+  </div>
+
+  <canvas id="canvas-somas" class="canvas-somas"
+          aria-label="Gráfico das somas parciais do rearranjo contra o número de termos, em escala logarítmica horizontal, serpenteando até a linha do limite."></canvas>
+  <div class="legenda">
+    <span><i class="amostra serie"></i>somas parciais</span>
+    <span><i class="amostra limite"></i>limite previsto</span>
+    <span><i class="amostra exata"></i>soma na ordem original</span>
+  </div>
+
+  <p class="nota">
+    O eixo horizontal é logarítmico: sem isso, os primeiros mil termos — onde a serpentina se
+    forma — ficariam espremidos num pixel. Cada coluna de pixel mostra o
+    <span class="destaque-texto">mínimo e o máximo</span> das somas que caem nela, e não uma
+    amostra a cada cem: a espessura do traço é a oscilação real de termo para termo, e apagá-la
+    desenharia uma curva lisa que não existe.
+  </p>
+
+  <p class="subtitulo-grafico">Os últimos 2% dos termos, em escala linear</p>
+  <canvas id="canvas-cauda" class="canvas-cauda"
+          aria-label="Ampliação dos últimos termos das somas parciais, mostrando a oscilação estreitando em torno do limite."></canvas>
+
+  <div class="indicadores">
+    <div class="indicador">
+      <span class="rotulo">soma parcial</span>
+      <span class="numero" id="ind-soma">—</span>
+      <span class="apoio" id="ind-soma-apoio">—</span>
+    </div>
+    <div class="indicador">
+      <span class="rotulo" id="rotulo-previsto">limite previsto</span>
+      <span class="numero" id="ind-previsto">—</span>
+      <span class="apoio" id="ind-previsto-apoio">—</span>
+    </div>
+    <div class="indicador">
+      <span class="rotulo">diferença</span>
+      <span class="numero" id="ind-diferenca">—</span>
+      <span class="apoio">cai como 1/K</span>
+    </div>
+    <div class="indicador">
+      <span class="rotulo">proporção usada p:q</span>
+      <span class="numero" id="ind-proporcao">—</span>
+      <span class="apoio" id="ind-proporcao-apoio">—</span>
+    </div>
+  </div>
+
+  <p class="aviso-inline" id="aviso-travou" hidden>
+    <strong id="aviso-travou-titulo">O rearranjo travou.</strong>
+    <span id="aviso-travou-texto"></span>
+  </p>
+
+  <h2>O que a tela está mostrando</h2>
+
+  <div class="introducao">
+    <p>
+      <strong>O alvo não é um ajuste, é uma consequência.</strong> O algoritmo é o da
+      demonstração do teorema: enquanto a soma está abaixo do alvo, toma o próximo positivo;
+      quando passa, toma o próximo negativo. Nada nele conhece o valor de
+      <span class="math" data-math="\ln 2"></span> nem a fórmula da proporção. Mesmo assim, a
+      razão entre os termos que ele consome de cada lista converge para
+      <span class="math" data-math="e^{2(S-\ln 2)}"></span>, que é a fórmula dos blocos escrita
+      ao contrário. Vale conferir com <span class="math" data-math="S=3"></span>: são
+      <span class="destaque-texto">cerca de 101 positivos para cada negativo</span>.
+    </p>
+
+    <p>
+      <strong>O caso <span class="math" data-math="1{:}4"></span> é o mais desconfortável.</strong>
+      Um positivo para cada quatro negativos dá
+      <span class="math" data-math="\ln 2+\tfrac12\ln(1/4)=\ln 2-\ln 2=0"></span>. Todos os
+      termos da série são diferentes de zero, nenhum foi descartado, nenhum foi repetido — e a
+      soma é zero.
+    </p>
+
+    <p>
+      <strong>Na série absolutamente convergente nada disso acontece.</strong> Em blocos, mover
+      <span class="math" data-math="p"></span> e <span class="math" data-math="q"></span> não
+      desloca o limite: os quatro dígitos do indicador ficam parados em
+      <span class="math" data-math="\pi^{2}/12=0{,}8225"></span>. No modo do alvo, o algoritmo
+      trava: a partir de certo ponto o que sobra dos positivos já não é suficiente para
+      empurrar a soma de volta acima do alvo, ele para de tomar negativos, e a soma converge
+      para um valor que não é o alvo. A interface mede isso — se em todo o último quarto dos
+      termos uma das listas não avançou nenhuma vez, o rearranjo deixou de alternar.
+    </p>
+
+    <p>
+      A diferença entre a soma parcial e o limite cai como
+      <span class="math" data-math="1/K"></span>, e é por isso que o controle de termos vai até
+      200 000: com poucos milhares a serpentina ainda é grossa demais para o quarto dígito se
+      firmar.
+    </p>
+  </div>
+
+  <footer class="rodape">
+    <p>
+      A notação e os enunciados da disciplina estão em <a href="teoria.html">Teoria</a>. A
+      diferença entre convergência pontual e uniforme está em
+      <a href="convergencia.html">Convergência</a>.
+    </p>
+    <p class="autoria-tecnica">
+      As somas são acumuladas em precisão dupla na ordem em que o rearranjo as produz — sem
+      soma compensada, porque é o rearranjo que está em julgamento, não o arredondamento. As
+      asserções estão em <a href="testes.html">testes.html</a>.
+    </p>
+  </footer>
+
+</div>
+
+<script src="vendor/katex/katex.min.js"></script>
+<script src="js/formulas.js"></script>
+<script src="js/formato.js"></script>
+<script src="js/reordenacao.js"></script>
+<script src="js/plot.js"></script>
+<script src="js/rearranjo.js"></script>
+</body>
+</html>

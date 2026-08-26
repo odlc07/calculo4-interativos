@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="description" content="A equação do calor resolvida por séries de Fourier: o fenômeno de Gibbs desaparece assim que t > 0, a mesma série vira a equação da onda com um único botão, e o tempo para trás mostra por que o problema inverso é mal-posto.">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>A equação do calor: onde a suavidade nasce — Cálculo 4</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2032%2032%22%3E%3Ccircle%20cx%3D%2213%22%20cy%3D%2216%22%20r%3D%229%22%20fill%3D%22none%22%20stroke%3D%22%2316606e%22%20stroke-width%3D%222%22%2F%3E%3Ccircle%20cx%3D%2222%22%20cy%3D%2216%22%20r%3D%224.5%22%20fill%3D%22none%22%20stroke%3D%22%239aa0a4%22%20stroke-width%3D%221.6%22%2F%3E%3Ccircle%20cx%3D%2226.5%22%20cy%3D%2216%22%20r%3D%222.6%22%20fill%3D%22%2316606e%22%2F%3E%3C%2Fsvg%3E">
+<link rel="stylesheet" href="vendor/katex/katex.min.css">
+<link rel="stylesheet" href="css/base.css">
+</head>
+<body>
+<div class="pagina">
+
+  <nav class="navegacao" aria-label="Seções do site">
+    <span class="marca-site">Módulos Interativos — Cálculo 4 (SMA0356)</span>
+    <a href="index.html">Início</a>
+    <a href="teoria.html">Teoria</a>
+    <a href="convergencia.html">Convergência</a>
+    <a href="epiciclos.html">Epiciclos</a>
+    <a href="teia.html">Teia</a>
+    <a href="geratriz.html">Geratriz</a>
+    <a href="calor.html" aria-current="page">Calor</a>
+    <a href="rearranjo.html">Rearranjo</a>
+  </nav>
+
+  <header class="cabecalho">
+    <p class="disciplina">SMA0356 / SMA0803 — Módulo 5</p>
+    <h1>A equação do calor: onde a suavidade nasce</h1>
+  </header>
+
+  <p class="crenca-falsa">
+    <span class="crenca-rotulo">A crença que este módulo desfaz</span>
+    “O calor só espalha o que já estava lá. Se a temperatura inicial tem um salto,
+    a solução continua tendo um salto — mais suave, com o tempo, mas ainda um salto.”
+  </p>
+
+  <div class="introducao">
+    <p>
+      Num anel de comprimento <span class="math" data-math="2L"></span>, com
+      <span class="math" data-math="L=\pi"></span>, a condição inicial é uma função
+      <span class="math" data-math="2\pi"></span>-periódica — a mesma classe de funções dos
+      módulos 1 e 2. Escrevendo a solução na forma complexa das notas,
+      <span class="math" data-math="u(x,t)=\sum_n \widehat{u}(n,t)\,e^{in\pi x/L}"></span>,
+      cada modo se separa e vira uma equação diferencial ordinária em
+      <span class="math" data-math="t"></span>:
+    </p>
+
+    <div class="formula" data-math-display="u_t=\alpha\,u_{xx}\;\Longrightarrow\; \partial_t\widehat{u}(n,t)=-\alpha\Bigl(\tfrac{n\pi}{L}\Bigr)^{2}\widehat{u}(n,t) \;\Longrightarrow\; \widehat{u}(n,t)=\widehat{f}(n)\,e^{-\alpha (n\pi/L)^{2}t}"></div>
+
+    <p>
+      Não há passo de tempo nem diferença finita nesta página: a solução é
+      <span class="destaque-texto">exata</span>, e o único erro é o truncamento da série — que
+      é medido por Parseval, como no módulo 1.
+    </p>
+
+    <p>
+      O fator <span class="math" data-math="e^{-\alpha n^{2}t}"></span> é uma gaussiana no
+      índice <span class="math" data-math="n"></span>. Para qualquer
+      <span class="math" data-math="t>0"></span>, por menor que seja, ele derruba a cauda do
+      espectro <span class="destaque-texto">mais rápido que qualquer potência de
+      <span class="math" data-math="n"></span></span>. E o módulo 1 mostrou que a velocidade
+      com que <span class="math" data-math="\widehat{f}(n)"></span> vai a zero é a mesma coisa
+      que a suavidade de <span class="math" data-math="f"></span>: se
+      <span class="math" data-math="f"></span> tem <span class="math" data-math="k"></span>
+      derivadas, então <span class="math" data-math="n^{k}\widehat{f}(n)\to0"></span>. Juntando
+      as duas coisas: <span class="destaque-texto">a solução é infinitamente derivável em todo
+      instante posterior ao inicial</span>, mesmo partindo de uma função descontínua. A
+      descontinuidade não é suavizada aos poucos — ela deixa de existir de uma vez.
+    </p>
+
+    <p>
+      Vale começar pela <span class="destaque-texto">onda quadrada</span> em
+      <span class="math" data-math="t=0"></span>. É a função do módulo 2, com as orelhas de
+      Gibbs no lugar. Depois basta mover o tempo um fio: as orelhas somem, e o indicador de
+      <em>quantos termos</em> a série precisa para chegar a
+      <span class="math" data-math="10^{-6}"></span> cai de “mais de 2 000” para algumas
+      dezenas. É o mesmo espectro, o mesmo truncamento e o mesmo critério de erro — só que
+      agora multiplicado por uma gaussiana.
+    </p>
+  </div>
+
+  <div class="controles">
+    <div class="controle">
+      <label id="rotulo-condicao">Temperatura inicial</label>
+      <div class="seletor" id="seletor-condicao" role="group" aria-labelledby="rotulo-condicao"></div>
+    </div>
+  </div>
+
+  <div class="controles">
+    <div class="controle">
+      <label id="rotulo-equacao">Equação</label>
+      <div class="seletor" id="seletor-equacao" role="group" aria-labelledby="rotulo-equacao">
+        <button type="button" class="botao-curva" data-modo="calor" aria-pressed="true">Calor</button>
+        <button type="button" class="botao-curva" data-modo="onda" aria-pressed="false">Onda</button>
+      </div>
+    </div>
+    <div class="controle">
+      <label for="slider-t">Tempo <span class="math" data-math="t"></span></label>
+      <input type="range" id="slider-t" min="-100" max="1000" value="0" step="1"
+             aria-describedby="descricao-t">
+      <span class="valor-controle" id="valor-t">0</span>
+    </div>
+    <div class="controle">
+      <label for="slider-n">Termos <span class="math" data-math="N"></span></label>
+      <input type="range" id="slider-n" min="1" max="128" value="64" step="1">
+      <span class="valor-controle" id="valor-n">64</span>
+    </div>
+    <button type="button" id="botao-animar" aria-pressed="false">avançar</button>
+    <button type="button" id="botao-reset">voltar a t = 0</button>
+  </div>
+
+  <p class="nota" id="descricao-t">
+    O controle de tempo é <span class="destaque-texto">logarítmico</span> no calor, de
+    <span class="math" data-math="10^{-5}"></span> a <span class="math" data-math="0{,}4"></span>:
+    difusão é um fenômeno de ordens de grandeza, e um controle linear gastaria quase todo o
+    curso num regime em que nada mais acontece. Na onda ele é linear, até
+    <span class="math" data-math="t=2\pi"></span>, que é um período completo com
+    <span class="math" data-math="c=1"></span>. À esquerda do zero, o tempo anda para trás.
+  </p>
+
+  <h2>A solução</h2>
+
+  <div class="painel-cabeca">
+    <h3 id="titulo-perfil">—</h3>
+    <span class="marcador" id="marcador-perfil"></span>
+  </div>
+
+  <div class="formula" id="formula-solucao" data-math-display="u(x,t)=\frac{a_0}{2}+\sum_{n=1}^{N} e^{-\alpha n^{2}t}\bigl(a_n\cos nx+b_n\sin nx\bigr)"></div>
+
+  <canvas id="canvas-perfil" class="canvas-perfil"
+          aria-label="Gráfico da temperatura ao longo do anel: a condição inicial em cinza e a solução no instante escolhido em azul."></canvas>
+  <div class="legenda">
+    <span><i class="amostra exata"></i>condição inicial f</span>
+    <span><i class="amostra serie"></i>u(·, t)</span>
+    <span><i class="amostra corte"></i>média a<sub>0</sub>/2</span>
+  </div>
+
+  <p class="subtitulo-grafico">Espectro <span class="math" data-math="|\widehat{u}(n,t)|"></span>, em escala logarítmica</p>
+  <canvas id="canvas-espectro" class="canvas-espectro"
+          aria-label="Gráfico do módulo dos coeficientes de Fourier contra o índice n, em escala logarítmica, com o espectro inicial em cinza e o espectro no instante escolhido em azul."></canvas>
+  <div class="legenda">
+    <span><i class="amostra exata"></i>espectro inicial</span>
+    <span><i class="amostra serie"></i>espectro em t</span>
+    <span><i class="amostra limite"></i>corte do truncamento em N</span>
+  </div>
+
+  <div class="indicadores">
+    <div class="indicador">
+      <span class="rotulo">erro de truncamento</span>
+      <span class="numero" id="ind-erro">—</span>
+      <span class="apoio">por Parseval, com N termos</span>
+    </div>
+    <div class="indicador">
+      <span class="rotulo">termos para erro &lt; 10⁻⁶</span>
+      <span class="numero" id="ind-termos">—</span>
+      <span class="apoio" id="ind-termos-apoio">—</span>
+    </div>
+    <div class="indicador">
+      <span class="rotulo">‖u(·,t)‖ / ‖f‖</span>
+      <span class="numero" id="ind-norma">—</span>
+      <span class="apoio" id="ind-norma-apoio">—</span>
+    </div>
+    <div class="indicador">
+      <span class="rotulo">amplitude máxima</span>
+      <span class="numero" id="ind-amplitude">—</span>
+      <span class="apoio" id="ind-amplitude-apoio">—</span>
+    </div>
+  </div>
+
+  <p class="aviso-inline" id="aviso-mal-posto" hidden>
+    <strong>Tempo para trás, no calor.</strong> O fator virou
+    <span class="math" data-math="e^{+\alpha n^{2}|t|}"></span>: cada modo cresce, e quanto mais
+    alto o índice, mais depressa. A série <em>não converge</em> — por isso os indicadores de
+    Parseval não têm número para mostrar aqui. Não é limitação do desenho: reconstruir o passado
+    a partir de uma distribuição de temperatura é um problema mal-posto, e a razão está inteira
+    neste expoente. Suba o número de termos e veja a soma piorar, em vez de melhorar.
+  </p>
+
+  <h2>O que a tela está mostrando</h2>
+
+  <div class="introducao">
+    <p>
+      <strong>Gibbs morre em <span class="math" data-math="t>0"></span>.</strong> Com a onda
+      quadrada em <span class="math" data-math="t=0"></span> e
+      <span class="math" data-math="N=64"></span>, o erro de truncamento é de cerca de 5,6% e
+      não há <span class="math" data-math="N"></span> que o faça cair rápido — é a mesma
+      conclusão do módulo 2, agora em forma de número. Leve o tempo a
+      <span class="math" data-math="10^{-3}"></span> e o erro cai para
+      <span class="math" data-math="2\times10^{-4}"></span>; em
+      <span class="math" data-math="10^{-2}"></span>, para menos de
+      <span class="math" data-math="10^{-20}"></span>. O espectro conta a mesma história de
+      lado: a reta de decaimento <span class="math" data-math="1/n"></span> entorta para baixo
+      e mergulha.
+    </p>
+
+    <p>
+      <strong>A onda tem o mesmo espectro e um destino oposto.</strong> Troque a equação. Os
+      coeficientes são idênticos — mesma <span class="math" data-math="f"></span>, mesmos
+      <span class="math" data-math="\widehat{f}(n)"></span> —, mas o fator passa a ser
+      <span class="math" data-math="\cos(cn\pi t/L)"></span>, de módulo no máximo 1 e que nunca
+      decai. Nada é suavizado: os saltos viajam, e em
+      <span class="math" data-math="t=2\pi"></span> a solução volta
+      <span class="destaque-texto">exatamente</span> à condição inicial, orelhas de Gibbs
+      inclusive. Toda a diferença entre esquecer o passado e recuperá-lo intacto está em
+      <span class="math" data-math="n^{2}"></span> num expoente negativo contra
+      <span class="math" data-math="n"></span> dentro de um cosseno.
+    </p>
+
+    <p>
+      <strong>O indicador de termos é o argumento em forma quantitativa.</strong> Ele responde
+      “quantos harmônicos são necessários para representar esta solução com erro relativo
+      abaixo de <span class="math" data-math="10^{-6}"></span>”. Em
+      <span class="math" data-math="t=0"></span>, sobre uma função descontínua, a resposta é
+      da ordem de <span class="math" data-math="10^{12}"></span> — a busca desiste em 2 000 e
+      diz isso. Em <span class="math" data-math="t=10^{-2}"></span>, a resposta é
+      <span class="math" data-math="31"></span>. Essa queda de doze ordens de grandeza é o
+      conteúdo do módulo.
+    </p>
+
+    <p>
+      A norma <span class="math" data-math="\|u(\cdot,t)\|/\|f\|"></span> cai no calor porque a
+      energia é dissipada. Na onda ela oscila, e isso não é perda: a energia da onda envolve
+      também <span class="math" data-math="u_t"></span>, e o que se vê subir e descer é apenas
+      a parcela guardada em <span class="math" data-math="u"></span>.
+    </p>
+  </div>
+
+  <footer class="rodape">
+    <p>
+      A notação e os enunciados estão em <a href="teoria.html">Teoria</a>. O decaimento dos
+      coeficientes é medido em <a href="epiciclos.html">Epiciclos</a>, e o fenômeno de Gibbs da
+      onda quadrada em <a href="convergencia.html">Convergência</a>.
+    </p>
+    <p class="autoria-tecnica">
+      Os coeficientes <span class="math" data-math="a_n"></span> e
+      <span class="math" data-math="b_n"></span> das quatro condições iniciais estão em forma
+      fechada, sem DFT: não há aliasing, e a cauda do espectro fica exata até onde se queira
+      somar. As asserções sobre este módulo estão em <a href="testes.html">testes.html</a>.
+    </p>
+  </footer>
+
+</div>
+
+<script src="vendor/katex/katex.min.js"></script>
+<script src="js/formulas.js"></script>
+<script src="js/formato.js"></script>
+<script src="js/difusao.js"></script>
+<script src="js/plot.js"></script>
+<script src="js/calor.js"></script>
+</body>
+</html>

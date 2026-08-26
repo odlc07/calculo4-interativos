@@ -75,6 +75,11 @@
 
 * { box-sizing: border-box; }
 
+/* O atributo `hidden` vale menos que qualquer `display` declarado em classe —
+   e .controles e flex. Sem isto, os controles que so valem num modo
+   continuariam visiveis no outro. */
+[hidden] { display: none !important; }
+
 html { -webkit-text-size-adjust: 100%; }
 
 body {
@@ -336,6 +341,12 @@ canvas:focus-visible { outline: 2px solid var(--destaque); outline-offset: 2px; 
 .canvas-palco    { height: 440px; }
 .canvas-espectro { height: 260px; }
 
+/* ---- canvas dos modulos 5 e 6 ------------------------------------------- */
+
+.canvas-perfil { height: 300px; }
+.canvas-somas  { height: 320px; }
+.canvas-cauda  { height: 170px; }
+
 .subtitulo-grafico {
   font-family: var(--sans);
   font-size: .72rem;
@@ -367,9 +378,9 @@ canvas:focus-visible { outline: 2px solid var(--destaque); outline-offset: 2px; 
 .legenda .amostra.limite { border-top-color: var(--grafico-limite); border-top-style: dashed; }
 .legenda .amostra.corte  { border-top-color: var(--destaque); border-top-style: dashed; }
 
-/* ---- crença falsa (módulos 3 e 4) --------------------------------------- */
+/* ---- crença falsa (módulos 3 a 6) --------------------------------------- */
 
-/* Estes dois módulos abrem enunciando o mal-entendido que vêm desfazer. Fica
+/* Estes módulos abrem enunciando o mal-entendido que vêm desfazer. Fica
    em citação, com um filete à esquerda, para se ler como voz alheia — não como
    afirmação da página. */
 .crenca-falsa {
@@ -428,6 +439,9 @@ input[type="number"]:focus-visible { outline: 2px solid var(--destaque); outline
 .canvas-sequencia   { height: 200px; }
 @media (max-width: 720px) {
   .canvas-plano, .canvas-crescimento { height: 270px; }
+  .canvas-perfil { height: 240px; }
+  .canvas-somas  { height: 260px; }
+  .canvas-cauda  { height: 150px; }
   .canvas-teia { height: 320px; }
 }
 
@@ -527,7 +541,7 @@ input[type="number"]:focus-visible { outline: 2px solid var(--destaque); outline
 
 /* ---- cartões da página inicial ------------------------------------------ */
 
-/* Grade fixa de duas colunas: os quatro módulos formam um único bloco 2x2.
+/* Grade fixa de duas colunas: os seis módulos formam um único bloco 3x2.
    auto-fit não serve aqui — a quebra dependeria da largura da janela e a
    página perderia o alinhamento em telas intermediárias. */
 .cartoes {

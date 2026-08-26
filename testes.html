@@ -107,15 +107,21 @@ li.falha .detalhe { color: var(--falhou); }
     <a href="teoria.html">Teoria</a>
     <a href="convergencia.html">Convergência</a>
     <a href="epiciclos.html">Epiciclos</a>
+    <a href="teia.html">Teia</a>
+    <a href="geratriz.html">Geratriz</a>
+    <a href="calor.html">Calor</a>
+    <a href="rearranjo.html">Rearranjo</a>
   </nav>
   <h1>Testes dos módulos matemáticos</h1>
   <p class="subtitulo">
-    Asserções sobre os cinco módulos puros — DFT e Parseval, curvas e
-    reparametrização por arco, as séries da triangular e da quadrada, pontos
-    fixos e órbitas, e recorrências lineares com seu raio de convergência. Nenhum acesso ao DOM dentro dos módulos testados; esta página
-    só desenha o resultado. A mesma suíte vive em <code>js/testes.js</code>.
-    <br>Esta <strong>não</strong> é uma das páginas interativas — os módulos são
-    <code>convergencia.html</code> e <code>epiciclos.html</code>.
+    Asserções sobre os módulos puros — DFT e Parseval, curvas e reparametrização
+    por arco, as séries da triangular e da quadrada, pontos fixos e órbitas,
+    recorrências lineares com seu raio de convergência, as soluções em série do
+    calor e da onda, e rearranjos de séries alternadas. Nenhum acesso ao DOM
+    dentro dos módulos testados; esta página só desenha o resultado. A mesma
+    suíte vive em <code>js/testes.js</code> e roda também sem navegador.
+    <br>Esta <strong>não</strong> é uma das páginas interativas — elas estão na
+    navegação acima.
   </p>
 
   <div class="resumo">
@@ -132,6 +138,9 @@ li.falha .detalhe { color: var(--falhou); }
 <script src="js/ondas.js"></script>
 <script src="js/polinomios.js"></script>
 <script src="js/iteracao.js"></script>
+<script src="js/difusao.js"></script>
+<script src="js/reordenacao.js"></script>
+<script src="js/formato.js"></script>
 <script src="js/testes.js"></script>
 <script>
 (function () {

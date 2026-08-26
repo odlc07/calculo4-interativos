@@ -1028,6 +1028,327 @@
       return contados.toLocaleString('pt-BR') + ' valores verificados';
     });
 
+  // =========================================================================
+  // Módulo 5 — equação do calor e equação da onda
+  // =========================================================================
+
+  teste('Calor', 'Parseval: a energia fechada de cada condição bate com a soma dos coeficientes',
+    function () {
+      var linhas = [];
+      global.Difusao.CONDICOES.forEach(function (c) {
+        var s = (c.a0 / 2) * (c.a0 / 2);
+        var ate = 400000;
+        for (var n = 1; n <= ate; n++) {
+          var a = c.a(n), b = c.b(n);
+          s += 0.5 * (a * a + b * b);
+        }
+        /* A soma trunca em 400 000 e a cauda que sobra não é ruído: nas funções
+         * descontínuas |f̂(n)| ~ 1/n e a cauda vale cerca de 1/400000. A
+         * tolerância é essa cauda, com folga — não um número escolhido para o
+         * teste passar. */
+        aprox(s, c.energia, 1e-5, 'energia de ' + c.id);
+        linhas.push(c.id + ' ' + c.energia.toFixed(6));
+      });
+      return linhas.join('; ');
+    });
+
+  teste('Calor', 'Em t = 0 a solução é a soma parcial de Fourier do módulo 2',
+    function () {
+      /* Os dois módulos escrevem a mesma onda quadrada por caminhos diferentes:
+       * ondas.js soma só os harmônicos ímpares indexados por n, difusao.js soma
+       * todos os índices com os pares zerados. Tomando N = 2m − 1 as duas somas
+       * têm exatamente os mesmos termos, e conferir isso amarra o módulo novo ao
+       * que já estava testado. */
+      var c = global.Difusao.porId('quadrada');
+      var maior = 0;
+      for (var m = 1; m <= 12; m++) {
+        for (var i = 0; i <= 40; i++) {
+          var x = -PI_TESTE + 2 * PI_TESTE * i / 40;
+          var a = global.Difusao.avaliar(c, 'calor', 2 * m - 1, 0, x);
+          var b = global.Ondas.quadrada.S(x, m);
+          maior = Math.max(maior, Math.abs(a - b));
+        }
+      }
+      abaixo(maior, 1e-12, 'maior diferença entre as duas somas parciais');
+      return 'maior diferença em 12 × 41 pontos: ' + fmt(maior);
+    });
+
+  teste('Calor', 'Qualquer t > 0 mata o fenômeno de Gibbs: o erro despenca',
+    function () {
+      var c = global.Difusao.porId('quadrada');
+      var e0 = global.Difusao.erroTruncamento(c, 'calor', 64, 0);
+      var e1 = global.Difusao.erroTruncamento(c, 'calor', 64, 1e-3);
+      var e2 = global.Difusao.erroTruncamento(c, 'calor', 64, 1e-2);
+      ok(e0 > 0.05, 'em t = 0 o erro deveria ser da ordem de 5%, veio ' + fmt(e0));
+      ok(e1 < 1e-3, 'em t = 1e-3 o erro deveria estar abaixo de 1e-3, veio ' + fmt(e1));
+      ok(e2 < 1e-15, 'em t = 1e-2 o erro deveria estar abaixo de 1e-15, veio ' + fmt(e2));
+
+      var t0 = global.Difusao.termosPara(c, 'calor', 0, 1e-6);
+      var t2 = global.Difusao.termosPara(c, 'calor', 1e-2, 1e-6);
+      ok(t0.saturou, 'em t = 0 a busca por termos deveria saturar');
+      ok(t2.M > 0 && t2.M < 60, 'em t = 1e-2 deveriam bastar poucas dezenas, vieram ' + t2.M);
+      return 'erro com N=64: ' + fmt(e0) + ' → ' + fmt(e1) + ' → ' + fmt(e2) +
+             '; termos para 1e-6: mais de ' + global.Difusao.BUSCA_MAX + ' → ' + t2.M;
+    });
+
+  teste('Calor', 'A onda não suaviza nada e volta exatamente em t = 2π',
+    function () {
+      var c = global.Difusao.porId('quadrada');
+      var xs = new Float64Array(64);
+      for (var i = 0; i < 64; i++) xs[i] = -PI_TESTE + 2 * PI_TESTE * i / 63;
+      var u0 = global.Difusao.perfil(c, 'onda', 64, 0, xs);
+      var uT = global.Difusao.perfil(c, 'onda', 64, 2 * PI_TESTE, xs);
+      var uNeg = global.Difusao.perfil(c, 'onda', 64, -1.3, xs);
+      var uPos = global.Difusao.perfil(c, 'onda', 64, 1.3, xs);
+      var volta = 0, reversa = 0;
+      for (i = 0; i < 64; i++) {
+        volta = Math.max(volta, Math.abs(u0[i] - uT[i]));
+        reversa = Math.max(reversa, Math.abs(uNeg[i] - uPos[i]));
+      }
+      abaixo(volta, 1e-12, 'u(x, 2π) deveria coincidir com u(x, 0)');
+      abaixo(reversa, 1e-12, 'a onda deveria ser par no tempo');
+
+      // e o truncamento nunca melhora: a busca satura em todo instante
+      [0, 0.5, 1.5, 3].forEach(function (t) {
+        var r = global.Difusao.termosPara(c, 'onda', t, 1e-6);
+        ok(r.saturou, 'a onda não deveria bastar-se com poucos termos em t = ' + t);
+      });
+      return 'volta com diferença ' + fmt(volta) + '; par no tempo com ' + fmt(reversa);
+    });
+
+  teste('Calor', 'O tempo para trás não converge, e mesmo assim nada estoura',
+    function () {
+      var c = global.Difusao.porId('quadrada');
+      ok(global.Difusao.convergente('calor', -1e-6) === false, 'deveria acusar divergência');
+      ok(global.Difusao.erroTruncamento(c, 'calor', 64, -1e-3) === null,
+         'o erro deveria vir nulo, não um número sem significado');
+      ok(global.Difusao.termosPara(c, 'calor', -1e-3, 1e-6).diverge === true,
+         'a contagem de termos deveria acusar divergência');
+
+      /* O pior caso possível da interface: todos os termos, o tempo mais para
+       * trás que o controle alcança. O teto N_MAX foi escolhido para que este
+       * número seja enorme e finito — se alguém subir N_MAX ou T_NEG_MIN sem
+       * refazer a conta, este teste quebra antes de a página mostrar Infinity. */
+      var pior = global.Difusao.amplitude(c, 'calor', global.Difusao.N_MAX,
+                                          global.Difusao.T_NEG_MIN);
+      num(pior);
+      ok(pior > 1e50, 'a explosão deveria ser gritante, veio ' + fmt(pior));
+      return 'amplitude no pior caso: ' + pior.toExponential(3) + ' (finita)';
+    });
+
+  teste('Calor', 'Nenhum NaN ou Infinity em nenhum caminho dos dois modos',
+    function () {
+      var contados = 0;
+      var esperados = ['calor', 'onda'];
+      var xs = new Float64Array(32);
+      for (var i = 0; i < 32; i++) xs[i] = -PI_TESTE + 2 * PI_TESTE * i / 31;
+
+      global.Difusao.CONDICOES.forEach(function (c) {
+        esperados.forEach(function (modo) {
+          /* Posições escolhidas, não uma varredura: cada ponto custa três somas
+           * até N_CAP, e o que precisa ser coberto são os regimes — o extremo do
+           * tempo para trás, a vizinhança do zero de cada lado, o zero exato, e
+           * os dois extremos para a frente. */
+          var posicoes = [global.Difusao.S_MIN, -50, -1, 0, 1, 250, 600,
+                          global.Difusao.S_MAX];
+          posicoes.forEach(function (s) {
+            var t = global.Difusao.tempoDe(modo, s);
+            num(t);
+            [1, 64, global.Difusao.N_MAX].forEach(function (N) {
+              var u = global.Difusao.perfil(c, modo, N, t, xs);
+              for (var k = 0; k < u.length; k++) { num(u[k]); contados++; }
+
+              var esp = global.Difusao.espectro(c, modo, N, t);
+              for (k = 0; k < esp.mags.length; k++) {
+                num(esp.mags[k]); num(esp.mags0[k]); contados += 2;
+              }
+
+              var err = global.Difusao.erroTruncamento(c, modo, N, t);
+              if (err !== null) {
+                num(err);
+                ok(err >= 0 && err <= 1, 'erro relativo fora de [0,1]: ' + fmt(err));
+                contados++;
+              }
+              var norma = global.Difusao.normaRelativa(c, modo, N, t);
+              if (norma !== null) { num(norma); contados++; }
+              num(global.Difusao.amplitude(c, modo, N, t, 32));
+              contados++;
+            });
+          });
+        });
+      });
+      return contados.toLocaleString('pt-BR') + ' valores verificados';
+    });
+
+  // =========================================================================
+  // Módulo 6 — rearranjo de séries alternadas
+  // =========================================================================
+
+  teste('Rearranjo', 'p positivos para q negativos convergem para ln 2 + ½·ln(p/q)',
+    function () {
+      var h = global.Reordenacao.porId('harmonica');
+      var linhas = [];
+      [[1, 1], [2, 1], [4, 1], [1, 4], [3, 2]].forEach(function (par) {
+        var r = global.Reordenacao.blocos(h, par[0], par[1], 200000);
+        /* O erro do rearranjo em blocos cai como 1/K. Com 200 000 termos isso
+         * dá alguns 1e-6, e é esse o tamanho da tolerância — não uma folga
+         * escolhida a esmo. */
+        aprox(r.soma, r.previsto, 2e-5, 'blocos ' + par[0] + ':' + par[1]);
+        ok(r.travou === false, 'blocos não deveriam travar');
+        linhas.push(par[0] + ':' + par[1] + ' → ' + r.soma.toFixed(6));
+      });
+      /* O caso 1:4 é o mais bonito de conferir: ln 2 + ½·ln(1/4) = ln 2 − ln 2,
+       * exatamente zero. Uma série de termos todos não nulos, reordenada, com
+       * soma zero. */
+      var zero = global.Reordenacao.blocos(h, 1, 4, 200000);
+      abaixo(Math.abs(zero.soma), 1e-4, 'o rearranjo 1:4 deveria somar zero');
+      return linhas.join('; ');
+    });
+
+  teste('Rearranjo', 'O guloso alcança o alvo, e a proporção que ele usa é a prevista',
+    function () {
+      var h = global.Reordenacao.porId('harmonica');
+      var linhas = [];
+      [3, 1, 0, -2, Math.PI].forEach(function (alvo) {
+        var r = global.Reordenacao.guloso(h, alvo, 200000);
+        ok(r.alcancavel, 'todo alvo real deveria ser alcançável nesta série');
+        ok(r.travou === false, 'o guloso não deveria travar numa série condicional');
+        aprox(r.soma, alvo, 1e-3, 'alvo ' + alvo);
+
+        /* O algoritmo não conhece esta fórmula: ele só compara a soma com o
+         * alvo a cada passo. A proporção em que acaba consumindo as duas listas
+         * é consequência, e bate com e^{2(S−ln2)} — a fórmula dos blocos,
+         * invertida. */
+        var previsto = h.previsaoProporcao(alvo);
+        var relativo = Math.abs(r.proporcao - previsto) / previsto;
+        abaixo(relativo, 5e-3, 'proporção p/q para o alvo ' + alvo);
+        linhas.push(alvo.toFixed(2) + ': p/q ' + r.proporcao.toFixed(3) +
+                    ' vs ' + previsto.toFixed(3));
+      });
+      return linhas.join('; ');
+    });
+
+  teste('Rearranjo', 'Absolutamente convergente: reordenar não move nada, e o guloso trava',
+    function () {
+      var q = global.Reordenacao.porId('quadrados');
+      [[1, 1], [4, 1], [1, 4], [7, 3]].forEach(function (par) {
+        var r = global.Reordenacao.blocos(q, par[0], par[1], 200000);
+        /* Dirichlet: absolutamente convergente, todo rearranjo dá o mesmo. Aqui
+         * p e q são os controles da interface, e o teste garante que mexer neles
+         * não muda o limite. */
+        aprox(r.soma, global.Reordenacao.PI2_12, 1e-4,
+              'blocos ' + par[0] + ':' + par[1] + ' deveriam dar π²/12');
+      });
+
+      var dentro = global.Reordenacao.guloso(q, 1.0, 200000);
+      ok(dentro.travou, 'o guloso deveria travar numa série absolutamente convergente');
+      ok(Math.abs(dentro.soma - 1.0) > 1e-3,
+         'e não deveria alcançar o alvo, mas chegou a ' + fmt(dentro.soma));
+
+      var fora = global.Reordenacao.guloso(q, 3, 200000);
+      ok(fora.alcancavel === false, 'um alvo acima de Σ positivos é inalcançável');
+      abaixo(Math.abs(fora.soma - q.somaPositivos), 1e-3,
+             'sem negativos a soma deveria empilhar em Σ positivos');
+      return 'π²/12 = ' + global.Reordenacao.PI2_12.toFixed(8) +
+             '; guloso com alvo 1 parou em ' + dentro.soma.toFixed(6);
+    });
+
+  teste('Rearranjo', 'O envelope não abre buracos nem inventa valores',
+    function () {
+      var h = global.Reordenacao.porId('harmonica');
+      var r = global.Reordenacao.guloso(h, 3, 200000);
+      var contados = 0;
+      ['log', 'linear'].forEach(function (escala) {
+        [80, 600, 1600].forEach(function (colunas) {
+          var env = global.Reordenacao.envelope(r.somas, 1, r.K, colunas, escala);
+          var vazias = 0;
+          for (var c = 0; c < env.colunas; c++) {
+            if (env.vazio[c]) { vazias++; continue; }
+            num(env.min[c]); num(env.max[c]);
+            ok(env.min[c] <= env.max[c], 'mínimo acima do máximo na coluna ' + c);
+            contados += 2;
+          }
+          ok(vazias === 0, escala + ' com ' + colunas + ' colunas deixou ' + vazias + ' buracos');
+          var f = global.Reordenacao.faixa(env);
+          ok(f !== null, 'faixa vazia');
+          num(f.y0); num(f.y1);
+        });
+      });
+      return contados.toLocaleString('pt-BR') + ' extremos verificados, nenhum buraco';
+    });
+
+  teste('Rearranjo', 'Nenhum NaN ou Infinity em nenhum caminho das duas séries',
+    function () {
+      var contados = 0;
+      global.Reordenacao.SERIES.forEach(function (serie) {
+        [-5, -1, 0, 0.5, 2, 7].forEach(function (alvo) {
+          var r = global.Reordenacao.guloso(serie, alvo, 5000);
+          for (var k = 0; k < r.K; k++) { num(r.somas[k]); contados++; }
+          if (r.proporcao !== null) { num(r.proporcao); contados++; }
+        });
+        for (var p = 1; p <= 6; p++) {
+          for (var q = 1; q <= 6; q++) {
+            var b = global.Reordenacao.blocos(serie, p, q, 3000);
+            for (var k2 = 0; k2 < b.K; k2++) { num(b.somas[k2]); contados++; }
+            num(b.previsto); num(b.erro);
+            contados += 2;
+          }
+        }
+      });
+      return contados.toLocaleString('pt-BR') + ' valores verificados';
+    });
+
+  // =========================================================================
+  // Formatação de número
+  // =========================================================================
+
+  teste('Formato', 'Nada de NaN, Infinity ou exponencial crua, em nenhuma ordem de grandeza',
+    function () {
+      /* A regra do projeto é que todo número exibido passe por formatação. Este
+       * teste varre doze ordens de grandeza para cada lado, mais os casos que
+       * costumam escapar — zero, negativo, e os próprios não finitos. */
+      var proibido = /NaN|Infinity|e[+-]\d/;
+      var contados = 0;
+      var valores = [0, 1, -1, 0.5, -0.5];
+      for (var k = -300; k <= 300; k += 7) {
+        valores.push(Math.pow(10, k), -Math.pow(10, k), 9.999 * Math.pow(10, k));
+      }
+      valores.forEach(function (v) {
+        [global.Formato.br(v, 4), global.Formato.cientifica(v),
+         global.Formato.numero(v), global.Formato.porcento(v),
+         global.Formato.inteiro(v)].forEach(function (texto) {
+          ok(typeof texto === 'string' && texto.length > 0, 'texto vazio para ' + v);
+          ok(!proibido.test(texto), 'saiu "' + texto + '" para ' + v);
+          contados++;
+        });
+      });
+
+      [NaN, Infinity, -Infinity, undefined, null].forEach(function (v) {
+        ok(global.Formato.numero(v) === global.Formato.AUSENTE,
+           'valor não finito deveria virar travessão, veio "' + global.Formato.numero(v) + '"');
+        ok(global.Formato.cientifica(v) === global.Formato.AUSENTE, 'idem em cientifica');
+        contados += 2;
+      });
+      return contados.toLocaleString('pt-BR') + ' textos verificados';
+    });
+
+  teste('Formato', 'Vírgula decimal, menos tipográfico e mantissa que não vira 10',
+    function () {
+      ok(global.Formato.br(1.5, 2) === '1,50', 'vírgula decimal: ' + global.Formato.br(1.5, 2));
+      ok(global.Formato.br(-1.5, 2) === '−1,50',
+         'o menos deveria ser o tipográfico: ' + global.Formato.br(-1.5, 2));
+
+      /* 9,999 com duas casas arredonda para 10,00 — que está certo e se lê mal.
+       * O formatador precisa subir o expoente em vez de escrever "10,00 × 10ⁿ". */
+      var t = global.Formato.cientifica(9.999e20, 2);
+      ok(t.indexOf('10,00') < 0, 'mantissa não normalizada: ' + t);
+      ok(t === '1,00 × 10²¹', 'esperava 1,00 × 10²¹, veio ' + t);
+
+      ok(global.Formato.expoente(-21) === '⁻²¹', 'expoente negativo malformado');
+      ok(global.Formato.inteiro(20000) === '20.000', 'separador de milhar: ' + global.Formato.inteiro(20000));
+      return '1,50 / −1,50 / ' + t + ' / ' + global.Formato.inteiro(20000);
+    });
+
   // ---- execução ------------------------------------------------------------
   function executar() {
     return casos.map(function (c) {

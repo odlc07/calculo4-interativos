@@ -20,6 +20,8 @@
     <a href="epiciclos.html">Epiciclos</a>
     <a href="teia.html">Teia</a>
     <a href="geratriz.html">Geratriz</a>
+    <a href="calor.html">Calor</a>
+    <a href="rearranjo.html">Rearranjo</a>
   </nav>
 
   <header class="cabecalho">
@@ -196,6 +198,93 @@
       Por isso o módulo reamostra em pontos equiespaçados <em>em arco</em> antes de calcular a
       transformada, e oferece um controle para desligar essa etapa — desligá-la é uma demonstração
       por si só.
+    </p>
+  </div>
+
+  <h2>Para que serve: as duas equações</h2>
+
+  <div class="verbete">
+    <p>
+      Fourier não construiu a série para estudar convergência: construiu-a para resolver a
+      equação do calor. Num anel de comprimento <span class="math" data-math="2L"></span>, a
+      solução se escreve na mesma base de sempre, e cada modo se separa numa equação
+      diferencial ordinária em <span class="math" data-math="t"></span>.
+    </p>
+
+    <div class="enunciado">
+      <p class="rotulo-teorema">Separação de variáveis</p>
+      <p class="sem-margem">
+        Escrevendo <span class="math" data-math="u(x,t)=\sum_n \widehat{u}(n,t)\,e^{in\pi x/L}"></span>
+        e impondo <span class="math" data-math="u(x,0)=f(x)"></span>:
+      </p>
+      <div class="formula" data-math-display="u_t=\alpha\,u_{xx}\;\Longrightarrow\;\widehat{u}(n,t)=\widehat{f}(n)\,e^{-\alpha(n\pi/L)^{2}t}"></div>
+      <div class="formula" data-math-display="u_{tt}=c^{2}u_{xx}\;\Longrightarrow\;\widehat{u}(n,t)=\widehat{f}(n)\,\cos\!\bigl(cn\pi t/L\bigr)"></div>
+      <p class="sem-margem">
+        A segunda com <span class="math" data-math="u_t(\cdot,0)=0"></span>, isto é, partindo
+        do repouso.
+      </p>
+    </div>
+
+    <p>
+      Os dois fatores são a mesma conta com um sinal e um expoente de diferença, e o destino das
+      duas soluções é oposto. No calor, <span class="math" data-math="e^{-\alpha n^{2}t}"></span>
+      é uma gaussiana no índice <span class="math" data-math="n"></span>: para todo
+      <span class="math" data-math="t>0"></span> ela derruba a cauda do espectro mais rápido que
+      qualquer potência de <span class="math" data-math="n"></span>. Pelo corolário do
+      decaimento, lido ao contrário, isso significa que
+      <span class="math" data-math="u(\cdot,t)"></span> é infinitamente derivável — ainda que
+      <span class="math" data-math="f"></span> seja descontínua. Na onda, o fator tem módulo no
+      máximo 1 e não decai nunca: nada é suavizado, e em
+      <span class="math" data-math="t=2L/c"></span> a solução volta exatamente à condição
+      inicial.
+    </p>
+
+    <p>
+      Daí também a assimetria do tempo. Com <span class="math" data-math="t<0"></span> o fator do
+      calor vira <span class="math" data-math="e^{+\alpha n^{2}|t|}"></span> e a série deixa de
+      convergir: reconstruir a distribuição de temperatura do passado é um problema mal-posto, e
+      a razão cabe num expoente. A onda, com o cosseno, é par em
+      <span class="math" data-math="t"></span> — para trás é igual a para a frente.
+    </p>
+
+    <p>
+      Os dois casos estão lado a lado, com um botão para trocar, em
+      <a href="calor.html">A equação do calor</a>.
+    </p>
+  </div>
+
+  <h2>Convergência absoluta e o preço de não tê-la</h2>
+
+  <div class="verbete">
+    <p>
+      Uma série alternada se decompõe em duas listas, a dos termos positivos e a dos negativos.
+      Quando <span class="math" data-math="\sum|a_k|<\infty"></span>, ambas somam valores
+      finitos e a ordem da soma não tem nenhuma influência sobre o limite — é o teorema de
+      Dirichlet. Quando a convergência é apenas condicional, as duas divergem, uma para
+      <span class="math" data-math="+\infty"></span> e a outra para
+      <span class="math" data-math="-\infty"></span>, e a ordem passa a decidir tudo.
+    </p>
+
+    <div class="enunciado">
+      <p class="rotulo-teorema">Teorema do rearranjo (Riemann)</p>
+      <p class="sem-margem">
+        Se <span class="math" data-math="\sum a_k"></span> converge mas não absolutamente,
+        então para todo <span class="math" data-math="S\in\mathbb{R}"></span> existe um
+        rearranjo de <span class="math" data-math="\sum a_k"></span> que converge para
+        <span class="math" data-math="S"></span>.
+      </p>
+    </div>
+
+    <p>
+      Na harmônica alternada há uma forma fechada para o caso mais simples: tomando
+      <span class="math" data-math="p"></span> positivos para cada
+      <span class="math" data-math="q"></span> negativos, a soma é
+    </p>
+    <div class="formula" data-math-display="\ln 2+\tfrac12\ln(p/q),"></div>
+    <p>
+      que em <span class="math" data-math="p=1"></span>,
+      <span class="math" data-math="q=4"></span> vale exatamente zero. É o que se pode arrastar
+      em <a href="rearranjo.html">Rearranjo</a>.
     </p>
   </div>
 

@@ -1,15 +1,18 @@
 # Módulos Interativos — Cálculo 4 (SMA0356)
 
-Quatro visualizações interativas para a disciplina de Cálculo 4 do ICMC-USP
+Seis visualizações interativas para a disciplina de Cálculo 4 do ICMC-USP
 (SMA0356 / SMA0803): duas sobre convergência de séries de Fourier, duas sobre sequências
-recursivas e raio de convergência.
+recursivas e raio de convergência, uma sobre a equação do calor e uma sobre o rearranjo de
+séries condicionalmente convergentes.
 
 A diferença em relação a uma animação em laço é que o aluno **controla o parâmetro**: dá para
 parar num valor, comparar dois números lado a lado e voltar atrás. É o que uma patologia de
 convergência exige para ser percebida.
 
-Os módulos 3 e 4 abrem enunciando uma **crença falsa** — o que o aluno provavelmente pensa de
-errado — e existem para desfazê-la.
+Os módulos 3 a 6 abrem enunciando uma **crença falsa** — o que o aluno provavelmente pensa de
+errado — e existem para desfazê-la. Ela vive na página do módulo, sempre sob o rótulo que a
+identifica como crença, e nunca no cartão da página inicial: solta e sem rótulo, uma afirmação
+falsa é lida como afirmação da página.
 
 ## Como publicar
 
@@ -115,6 +118,59 @@ Esta é a versão discreta da tese do módulo 1, e as duas páginas se citam: l�
 complexa governa a velocidade de *decaimento* dos coeficientes; aqui, a de *crescimento* da
 sequência.
 
+### `calor.html` — a equação do calor (módulo 5)
+
+> *"O calor só espalha o que já estava lá: se a temperatura inicial tem um salto, a solução
+> continua tendo um salto."*
+
+Num anel de comprimento `2L` com `L = π`, cada modo separa e vira uma EDO em `t`:
+
+| equação | fator | destino |
+|---|---|---|
+| calor `u_t = α u_xx` | `e^{-α n² t}` | gaussiana em `n`: mata a cauda mais rápido que qualquer potência |
+| onda `u_tt = c² u_xx` | `cos(c n t)` | módulo ≤ 1, não decai: volta exata em `t = 2π` |
+
+A solução é **exata** — sem diferença finita, sem passo de tempo —, e o único erro é o
+truncamento, medido por Parseval como no módulo 1. Os coeficientes das quatro condições
+iniciais estão em forma fechada, sem DFT: não há aliasing, e a cauda do espectro fica exata
+até onde se queira somar.
+
+O indicador central responde *quantos harmônicos* bastam para erro relativo abaixo de `1e-6`:
+
+| `t` | 0 | `1e-5` | `1e-3` | `1e-2` | 0,4 |
+|---|---:|---:|---:|---:|---:|
+| onda quadrada | mais de 2 000 | 887 | 95 | 31 | 5 |
+
+Em `t = 0` a resposta verdadeira é da ordem de `10¹²`, e a busca desiste em 2 000 dizendo isso.
+A queda de doze ordens de grandeza assim que `t > 0` é o conteúdo do módulo: é o fenômeno de
+Gibbs do módulo 2 deixando de existir, e é a tese do módulo 1 — decaimento dos coeficientes é
+a mesma coisa que suavidade — lida ao contrário.
+
+Com `t < 0` no calor a série **não converge**, e a página escreve isso em vez de um número: o
+problema inverso do calor é mal-posto, e a razão cabe num expoente. A onda, sendo par em `t`,
+atravessa o zero sem notar.
+
+### `rearranjo.html` — rearranjo de séries (módulo 6)
+
+> *"Somar é comutativo: os mesmos números, em outra ordem, dão a mesma soma."*
+
+O aluno escolhe um número e o rearranjo guloso da harmônica alternada converge para ele. Dois
+valores fechados sustentam o módulo:
+
+| rearranjo | limite | conferência |
+|---|---|---|
+| `p` positivos para `q` negativos | `ln 2 + ½·ln(p/q)` | com `1:4`, **exatamente zero** |
+| guloso mirando `S` | proporção usada `→ e^{2(S − ln 2)}` | com `S = 3`, ~101 positivos por negativo |
+
+A segunda é a mais bonita: o algoritmo só compara a soma com o alvo a cada passo, não conhece
+fórmula nenhuma, e mesmo assim a proporção em que consome as duas listas cai em cima da
+previsão — que é a fórmula dos blocos, invertida.
+
+A série `Σ(−1)^{k+1}/k²` é o controle. Absolutamente convergente, todo rearranjo dá `π²/12`
+(Dirichlet): mover `p` e `q` não desloca um dígito, e o guloso **trava** — a página mede isso,
+declarando travamento quando uma das duas listas não avança nenhuma vez em todo o último quarto
+dos termos.
+
 ## Estrutura
 
 ```
@@ -124,6 +180,8 @@ epiciclos.html        módulo 1
 convergencia.html     módulo 2
 teia.html             módulo 3
 geratriz.html         módulo 4
+calor.html            módulo 5
+rearranjo.html        módulo 6
 testes.html           suíte de asserções sobre os módulos matemáticos
 css/
   base.css            tokens, tipografia, layout compartilhado
@@ -133,6 +191,9 @@ js/
   ondas.js            triangular e quadrada, Gibbs            — puro, sem DOM
   polinomios.js       recorrências, raízes, raio              — puro, sem DOM
   iteracao.js         pontos fixos, órbitas, teia             — puro, sem DOM
+  difusao.js          calor e onda em série, Parseval         — puro, sem DOM
+  reordenacao.js      rearranjos de séries alternadas         — puro, sem DOM
+  formato.js          número em português, para a tela        — puro, sem DOM
   plot.js             helpers de canvas: escala, eixos, traçado
   formulas.js         renderização com KaTeX, com plano B
   index.js            miniaturas da página inicial
@@ -140,18 +201,20 @@ js/
   convergencia.js     controlador do módulo 2
   teia.js             controlador do módulo 3
   geratriz.js         controlador do módulo 4
+  calor.js            controlador do módulo 5
+  rearranjo.js        controlador do módulo 6
   testes.js           as asserções
 vendor/
   katex/              KaTeX 0.16.11, hospedado localmente
 ```
 
-Os cinco módulos matemáticos (`fourier.js`, `curvas.js`, `ondas.js`, `polinomios.js`,
-`iteracao.js`) não tocam no DOM: recebem números e devolvem números. É isso que torna possível
-testá-los. Quem quiser contribuir encontra o resto em [CONTRIBUINDO.md](CONTRIBUINDO.md).
+Os oito módulos puros (`fourier.js`, `curvas.js`, `ondas.js`, `polinomios.js`, `iteracao.js`,
+`difusao.js`, `reordenacao.js`, `formato.js`) não tocam no DOM: recebem números e devolvem
+números — ou, no caso do último, texto. É isso que torna possível testá-los. Quem quiser contribuir encontra o resto em [CONTRIBUINDO.md](CONTRIBUINDO.md).
 
 ## Testes
 
-Abra `testes.html`. São 54 asserções, entre elas:
+Abra `testes.html`. São 67 asserções, entre elas:
 
 - os dois casos de prova do módulo 4 saem exatos, com `P`, `Q`, raízes e raio conferidos;
 - o ajuste recupera o parâmetro de espectros sintéticos `A·e^{-0,35n}` e `n^{-2,5}` com `R² = 1`;
@@ -162,7 +225,17 @@ Abra `testes.html`. São 54 asserções, entre elas:
 - a simetria de ordem 4 da astroide zera todo `n ≢ 1 (mod 4)`, dentro de `1,1e-15`;
 - a logística com `r = 3,2` cai em ciclo de período 2, detectado automaticamente;
 - `|g′| = 1` é classificado como inconclusivo, incluindo `0,999999999999`;
-- nenhum `NaN`, `Infinity` ou `-0` em nenhuma combinação de controles.
+- a onda volta a `u(x, 0)` em `t = 2π` com diferença **exatamente zero**, e é par em `t`;
+- no calor, o erro de truncamento com 64 termos cai de 5,6% em `t = 0` para `4,5e-21` em
+  `t = 0,01`, e a busca por termos satura em `t = 0` como deve;
+- a energia fechada das quatro condições iniciais bate com a soma dos coeficientes em `1e-5`,
+  que é o tamanho da cauda além de 400 000 termos;
+- o rearranjo `1:4` da harmônica alternada soma zero, e a proporção que o guloso usa bate com
+  `e^{2(S−ln2)}` dentro de 0,5% em cinco alvos diferentes;
+- reordenar a série absolutamente convergente não move o limite de `π²/12`;
+- a formatação nunca emite `NaN`, `Infinity` ou exponencial crua em 600 ordens de grandeza —
+  inclusive acima de `1e21`, onde `toFixed` volta a produzir `"1e+22"` sozinho;
+- nenhum `NaN`, `Infinity` ou `-0` em nenhuma combinação de controles, nos seis módulos.
 
 ## Quatro decisões de implementação que não são óbvias
 

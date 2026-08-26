@@ -13,10 +13,13 @@ DOM — justamente para poderem ser testados assim.
 
 ```
 js/fourier.js      DFT, Parseval, ajuste log-log        \
-js/curvas.js       as seis curvas e a reparametrização   |  puros: sem DOM,
-js/ondas.js        triangular e quadrada, Gibbs          |  testáveis
-js/polinomios.js   recorrências, raízes, raio            |
-js/iteracao.js     pontos fixos, órbitas, teia          /
+js/curvas.js       as seis curvas e a reparametrização   |
+js/ondas.js        triangular e quadrada, Gibbs          |  puros: sem DOM,
+js/polinomios.js   recorrências, raízes, raio            |  testáveis
+js/iteracao.js     pontos fixos, órbitas, teia           |
+js/difusao.js      calor e onda em série, Parseval       |
+js/reordenacao.js  rearranjos de séries alternadas       |
+js/formato.js      número em português, para a tela     /
 
 js/plot.js         helpers de canvas: escala, eixos, traçado
 js/formulas.js     renderização com KaTeX, com plano B
@@ -29,7 +32,9 @@ Coloque em um módulo puro e escreva a asserção.
 
 Quando um módulo novo precisar de algo de `plot.js`, **faça a função existente crescer** em vez
 de duplicar o desenho dentro do controlador. Foi assim que `escalaIsometrica` saiu de
-`epiciclos.js` para `plot.js` quando o plano complexo do módulo 4 passou a precisar dela.
+`epiciclos.js` para `plot.js` quando o plano complexo do módulo 4 passou a precisar dela, e foi
+assim que a formatação de número virou `formato.js` quando o segundo controlador precisou
+escrever `1,88 × 10¹¹⁰` sem repetir a tabela de algarismos sobrescritos.
 
 ## Restrições que não são negociáveis
 
@@ -40,7 +45,9 @@ de duplicar o desenho dentro do controlador. Foi assim que `escalaIsometrica` sa
 - **Sem `localStorage`, sem `<form>`, sem `position: fixed`.**
 - **Português do Brasil** em toda a interface, inclusive nos nomes de variáveis e comentários.
 - **Nada de `NaN`, `Infinity` ou notação exponencial crua na tela**, em nenhum caminho.
-  Todo número exibido passa por `toFixed` ou formatação explícita.
+  Todo número exibido passa por `formato.js`. Note que `toFixed` sozinho **não** basta: acima
+  de `1e21` ele volta a devolver `"1e+22"`, e `isFinite(null)` é `true`. As duas armadilhas têm
+  asserção na suíte.
 - Acessível: foco de teclado visível, `aria-label` nos canvas, e `prefers-reduced-motion`
   respeitado — com motion reduzido nenhuma animação começa sozinha.
 - Responsivo até 380px de largura.
@@ -60,7 +67,7 @@ Cada página segue a mesma estrutura, e vale manter:
 4. **Controles**, depois **canvas**, depois **indicadores numéricos**.
 5. Uma seção final explicando o que se vê na tela e por quê.
 
-## Ideia de módulo para quem quiser começar
+## Ideias de módulo para quem quiser começar
 
 **Simetria dos coeficientes de Fourier** — baseado nas questões `quadrada-pw-pequeno` e
 `fourier-inverted-spike`.
@@ -80,7 +87,15 @@ Por que é um bom primeiro módulo:
   regimes, com os coeficientes reagindo.
 
 Sugestão de arquivos: `simetria.html`, `js/simetria.js`, e as funções puras dentro de
-`js/fourier.js` ou de um `js/simetria-modelo.js` novo — o que couber melhor.
+`js/fourier.js` ou de um módulo puro novo — o que couber melhor. A convenção dos módulos 5 e 6
+é essa: o arquivo puro leva o nome do assunto (`difusao.js`, `reordenacao.js`) e o controlador
+leva o nome da página (`calor.js`, `rearranjo.js`).
+
+**Troca de limites** — a segunda ideia da fila, e a que cobre o bloco de sequências de funções,
+hoje sem módulo. A família `f_n(x) = 2n·x·e^{-n x²}` em `[0,1]` converge pontualmente a zero,
+mas `∫ f_n → 1`: o limite não comuta com a integral. Um segundo controle sobre o expoente do
+peso atravessa o limiar em que o teorema passa a valer, e é a travessia — não os dois lados —
+que a interatividade acrescenta.
 
 ## Ao terminar
 
