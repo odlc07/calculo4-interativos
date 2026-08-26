@@ -62,6 +62,9 @@ Cada página segue a mesma estrutura, e vale manter:
    provavelmente pensa de errado, antes de mostrar o contrário. O rótulo não é decoração —
    é o que impede a frase de ser lida como afirmação da página. Por isso ela vive aqui, onde
    a refutação vem logo em seguida, e não no cartão da página inicial.
+   O filete e o rótulo usam `--crenca`, e **não** `--grafico-limite`: aquele token marca o
+   limite teórico nos gráficos, que é um valor correto, e os avisos de verdade. A frase
+   citada fica em cinza — quem carrega o sentido é o rótulo, não a cor.
 3. **Dois ou três parágrafos** enunciando a matemática em jogo, na notação da disciplina.
    O texto ancora; a animação ilustra. Sem texto, vira videogame.
 4. **Controles**, depois **canvas**, depois **indicadores numéricos**.

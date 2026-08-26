@@ -9,8 +9,8 @@ A diferença em relação a uma animação em laço é que o aluno **controla o 
 parar num valor, comparar dois números lado a lado e voltar atrás. É o que uma patologia de
 convergência exige para ser percebida.
 
-Os módulos 3 a 6 abrem enunciando uma **crença falsa** — o que o aluno provavelmente pensa de
-errado — e existem para desfazê-la. Ela vive na página do módulo, sempre sob o rótulo que a
+Cada módulo abre enunciando uma **crença falsa** — o que o aluno provavelmente pensa de errado
+— e existe para desfazê-la. Ela vive na página do módulo, sempre sob o rótulo que a
 identifica como crença, e nunca no cartão da página inicial: solta e sem rótulo, uma afirmação
 falsa é lida como afirmação da página.
 

@@ -38,6 +38,14 @@
   --grafico-referencia:#8d9396;
   --grafico-limite:    #a3282a;
 
+  /* Vermelho da crença falsa. Token próprio, e não o --grafico-limite: aquele
+     marca o limite teórico nos gráficos, que é um valor CERTO, e os avisos.
+     Este marca uma frase que é falsa. Misturar os dois faria a linha de
+     0,2811 no módulo 2 e a crença do módulo 3 dizerem a mesma coisa.
+     Claret, mais escuro e menos saturado que o de aviso: 8,1:1 sobre o papel,
+     bem acima do mínimo, e sem o tom de alarme. */
+  --crenca:            #8c2f39;
+
   --serif: Charter, "Bitstream Charter", "Iowan Old Style", Georgia, "Times New Roman", serif;
   --sans: "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   --mono: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
@@ -70,6 +78,7 @@
     --grafico-grade:     #26292c;
     --grafico-referencia:#7e858a;
     --grafico-limite:    #e8908f;
+    --crenca:            #d99098;
   }
 }
 
@@ -378,16 +387,19 @@ canvas:focus-visible { outline: 2px solid var(--destaque); outline-offset: 2px; 
 .legenda .amostra.limite { border-top-color: var(--grafico-limite); border-top-style: dashed; }
 .legenda .amostra.corte  { border-top-color: var(--destaque); border-top-style: dashed; }
 
-/* ---- crença falsa (módulos 3 a 6) --------------------------------------- */
+/* ---- crença falsa (todos os módulos) ------------------------------------ */
 
-/* Estes módulos abrem enunciando o mal-entendido que vêm desfazer. Fica
-   em citação, com um filete à esquerda, para se ler como voz alheia — não como
-   afirmação da página. */
+/* Cada módulo abre enunciando o mal-entendido que vem desfazer. Fica em
+   citação, com um filete à esquerda, para se ler como voz alheia — não como
+   afirmação da página. O filete e o rótulo levam o vermelho de --crenca; a
+   frase em si fica em cinza, porque quem carrega o sentido é o rótulo, e não
+   a cor — quem não distingue as duas continua lendo "a crença que este módulo
+   desfaz" antes da frase. */
 .crenca-falsa {
   max-width: var(--medida);
   margin: 0 0 var(--e5);
   padding: var(--e3) 0 var(--e3) var(--e4);
-  border-left: 3px solid var(--linha-forte);
+  border-left: 3px solid var(--crenca);
   font-size: 1.05rem;
   font-style: italic;
   color: var(--tinta-media);
@@ -400,7 +412,7 @@ canvas:focus-visible { outline: 2px solid var(--destaque); outline-offset: 2px; 
   font-style: normal;
   letter-spacing: .1em;
   text-transform: uppercase;
-  color: var(--tinta-fraca);
+  color: var(--crenca);
   margin-bottom: var(--e2);
 }
 
