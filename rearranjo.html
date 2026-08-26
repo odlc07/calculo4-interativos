@@ -157,6 +157,18 @@
     desenharia uma curva lisa que não existe.
   </p>
 
+  <p class="nota">
+    Por causa da escala logarítmica, a densidade muda muito ao longo do gráfico, e o traço muda
+    de significado junto. <span class="destaque-texto">À esquerda</span>, cada coluna recebe uma
+    única soma parcial, e o que se vê é a poligonal ligando uma à outra: os degraus grandes de
+    lá são reais — no começo o algoritmo empilha termos inteiros como
+    <span class="math" data-math="1"></span>, <span class="math" data-math="1/3"></span>,
+    <span class="math" data-math="1/5"></span>, e cada um move a soma de forma visível.
+    <span class="destaque-texto">À direita</span>, uma coluna recebe dezenas de somas, e a
+    altura do traço passa a ser a amplitude da oscilação naquele trecho — que encolhe como
+    <span class="math" data-math="1/k"></span>, junto com o tamanho do termo.
+  </p>
+
   <p class="subtitulo-grafico">Os últimos 2% dos termos, em escala linear</p>
   <canvas id="canvas-cauda" class="canvas-cauda"
           aria-label="Ampliação dos últimos termos das somas parciais, mostrando a oscilação estreitando em torno do limite."></canvas>

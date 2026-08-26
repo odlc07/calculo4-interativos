@@ -84,20 +84,37 @@
     return { y0: y0 - folga, y1: y1 + folga };
   }
 
-  /* O envelope, desenhado como uma barra vertical por coluna de pixel. */
+  /* O envelope, desenhado como UM traço contínuo.
+   *
+   * Por coluna o caminho faz quatro paradas: chega no `primeiro` valor dela,
+   * desce ao mínimo, sobe ao máximo e termina no `ultimo`. O segmento que liga
+   * o `ultimo` de uma coluna ao `primeiro` da seguinte é uma aresta de
+   * poligonal de verdade — não um enfeite para tapar buraco.
+   *
+   * Assim as duas regiões do gráfico saem certas com a mesma conta. Onde cada
+   * coluna tem uma amostra só, as quatro paradas coincidem e o que se desenha
+   * é a poligonal das somas parciais. Onde uma coluna tem dezenas, a subida
+   * até o máximo e a descida até o mínimo dão à coluna a altura da oscilação
+   * naquele trecho. Sem o segmento de ligação — que era o que faltava — a
+   * primeira região virava uma fileira de tracinhos soltos. */
   function desenharEnvelope(ctx, esc, env, cor) {
+    function alturaDe(v) { return esc.py(Math.max(esc.y0, Math.min(esc.y1, v))); }
+
     ctx.save();
     ctx.strokeStyle = cor;
     ctx.lineWidth = 1;
+    ctx.lineJoin = 'round';
     ctx.beginPath();
+    var iniciado = false;
     for (var c = 0; c < env.colunas; c++) {
       if (env.vazio[c]) continue;
-      var px = esc.margem.esq + (env.colunas === 1 ? 0 : esc.pw * c / (env.colunas - 1));
-      px = Math.round(px) + 0.5;
-      var lo = Math.max(esc.y0, Math.min(esc.y1, env.min[c]));
-      var hi = Math.max(esc.y0, Math.min(esc.y1, env.max[c]));
-      ctx.moveTo(px, esc.py(lo));
-      ctx.lineTo(px, esc.py(hi) - 1);        // −1 garante traço visível quando lo = hi
+      var px = esc.margem.esq +
+               (env.colunas === 1 ? 0 : esc.pw * c / (env.colunas - 1));
+      if (iniciado) ctx.lineTo(px, alturaDe(env.primeiro[c]));
+      else { ctx.moveTo(px, alturaDe(env.primeiro[c])); iniciado = true; }
+      ctx.lineTo(px, alturaDe(env.min[c]));
+      ctx.lineTo(px, alturaDe(env.max[c]));
+      ctx.lineTo(px, alturaDe(env.ultimo[c]));
     }
     ctx.stroke();
     ctx.restore();

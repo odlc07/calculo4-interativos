@@ -1253,28 +1253,50 @@
              '; guloso com alvo 1 parou em ' + dentro.soma.toFixed(6);
     });
 
-  teste('Rearranjo', 'O envelope não abre buracos nem inventa valores',
+  teste('Rearranjo', 'O envelope não perde nem inventa amostra, e sabe ligar as colunas',
     function () {
       var h = global.Reordenacao.porId('harmonica');
       var r = global.Reordenacao.guloso(h, 3, 200000);
       var contados = 0;
+      var relato = [];
       ['log', 'linear'].forEach(function (escala) {
         [80, 600, 1600].forEach(function (colunas) {
           var env = global.Reordenacao.envelope(r.somas, 1, r.K, colunas, escala);
-          var vazias = 0;
+          var somaContas = 0, vazias = 0, ralas = 0, cheias = 0;
           for (var c = 0; c < env.colunas; c++) {
-            if (env.vazio[c]) { vazias++; continue; }
-            num(env.min[c]); num(env.max[c]);
+            somaContas += env.conta[c];
+            if (env.vazio[c]) { vazias++; ok(env.conta[c] === 0, 'coluna vazia com amostra'); continue; }
+            num(env.min[c]); num(env.max[c]); num(env.primeiro[c]); num(env.ultimo[c]);
             ok(env.min[c] <= env.max[c], 'mínimo acima do máximo na coluna ' + c);
-            contados += 2;
+            /* primeiro e ultimo são o que liga uma coluna à seguinte; se
+             * escapassem da faixa [min, max] o traço sairia da própria curva. */
+            ok(env.primeiro[c] >= env.min[c] && env.primeiro[c] <= env.max[c],
+               'primeiro fora de [min, max] na coluna ' + c);
+            ok(env.ultimo[c] >= env.min[c] && env.ultimo[c] <= env.max[c],
+               'ultimo fora de [min, max] na coluna ' + c);
+            if (env.conta[c] === 1) ralas++; else cheias++;
+            contados += 4;
           }
-          ok(vazias === 0, escala + ' com ' + colunas + ' colunas deixou ' + vazias + ' buracos');
+          /* Nenhuma soma parcial pode ficar de fora: o envelope é uma
+           * reorganização das K amostras, não uma amostragem delas. */
+          ok(somaContas === r.K, escala + '/' + colunas + ': ' + somaContas +
+             ' amostras distribuídas, esperava ' + r.K);
           var f = global.Reordenacao.faixa(env);
           ok(f !== null, 'faixa vazia');
           num(f.y0); num(f.y1);
+          if (escala === 'log' && colunas === 600) {
+            /* É este o regime que quebrou o desenho: em log com 600 colunas as
+             * primeiras centenas recebem zero ou uma amostra. O envelope pode
+             * ter altura nula ali — o que não pode é o traço perder a ligação. */
+            ok(vazias > 0 && ralas > 0,
+               'esperava colunas vazias e ralas em escala log, vieram ' + vazias +
+               ' e ' + ralas);
+            relato.push('log/600: ' + vazias + ' vazias, ' + ralas + ' com uma amostra, ' +
+                        cheias + ' com várias');
+          }
         });
       });
-      return contados.toLocaleString('pt-BR') + ' extremos verificados, nenhum buraco';
+      return contados.toLocaleString('pt-BR') + ' valores verificados; ' + relato.join('');
     });
 
   teste('Rearranjo', 'Nenhum NaN ou Infinity em nenhum caminho das duas séries',

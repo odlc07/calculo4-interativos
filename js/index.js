@@ -226,15 +226,24 @@
       y0: Math.min(f.y0, ALVO - 0.4), y1: Math.max(f.y1, ALVO + 0.4)
     });
 
+    /* Mesmo caminho contínuo do módulo 6 (ver desenharEnvelope em
+     * rearranjo.js): liga o último valor de cada coluna ao primeiro da
+     * seguinte, para a região rala sair como poligonal e não como tracinhos. */
+    function altura(v) { return esc.py(Math.max(esc.y0, Math.min(esc.y1, v))); }
     a.ctx.save();
     a.ctx.strokeStyle = c.destaque;
     a.ctx.lineWidth = 1;
+    a.ctx.lineJoin = 'round';
     a.ctx.beginPath();
+    var iniciado = false;
     for (var col = 0; col < env.colunas; col++) {
       if (env.vazio[col]) continue;
-      var px = Math.round(esc.margem.esq + esc.pw * col / (env.colunas - 1)) + 0.5;
-      a.ctx.moveTo(px, esc.py(Math.max(esc.y0, Math.min(esc.y1, env.min[col]))));
-      a.ctx.lineTo(px, esc.py(Math.max(esc.y0, Math.min(esc.y1, env.max[col]))) - 1);
+      var px = esc.margem.esq + esc.pw * col / (env.colunas - 1);
+      if (iniciado) a.ctx.lineTo(px, altura(env.primeiro[col]));
+      else { a.ctx.moveTo(px, altura(env.primeiro[col])); iniciado = true; }
+      a.ctx.lineTo(px, altura(env.min[col]));
+      a.ctx.lineTo(px, altura(env.max[col]));
+      a.ctx.lineTo(px, altura(env.ultimo[col]));
     }
     a.ctx.stroke();
     a.ctx.restore();

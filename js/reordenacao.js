@@ -196,6 +196,19 @@
    *
    * `escala` é 'log' ou 'linear'. Em log o eixo é log10(k), com k a partir de 1
    * — o que permite ver ao mesmo tempo os primeiros passos e a cauda.
+   *
+   * A densidade de amostras por coluna varia MUITO em escala log: com 20 mil
+   * termos em 700 colunas, as primeiras 300 recebem zero ou uma amostra e as
+   * últimas recebem cinquenta cada. Nas colunas ralas o mínimo e o máximo
+   * coincidem, e uma barra vertical de altura zero por coluna não desenha
+   * curva nenhuma: desenha tracinhos soltos. Por isso saem daqui também o
+   * `primeiro` e o `ultimo` valor de cada coluna — é com eles que quem desenha
+   * liga uma coluna à seguinte, e o traço vira poligonal onde há uma amostra
+   * por coluna e faixa onde há muitas, sem trocar de representação no meio.
+   *
+   * Colunas sem amostra alguma ficam marcadas como vazias e não são
+   * preenchidas com o valor da vizinha: quem desenha passa por cima delas, que
+   * é o que a poligonal faz de qualquer forma.
    */
   function envelope(somas, k0, k1, colunas, escala) {
     var nCol = Math.max(1, Math.round(colunas));
@@ -203,6 +216,9 @@
     var fim = Math.min(somas.length, Math.round(k1));
     var min = new Float64Array(nCol);
     var max = new Float64Array(nCol);
+    var primeiro = new Float64Array(nCol);
+    var ultimo = new Float64Array(nCol);
+    var conta = new Int32Array(nCol);
     var vazio = new Uint8Array(nCol);
     var c;
     for (c = 0; c < nCol; c++) { min[c] = Infinity; max[c] = -Infinity; vazio[c] = 1; }
@@ -220,19 +236,14 @@
       var v = somas[k - 1];
       if (v < min[c]) min[c] = v;
       if (v > max[c]) max[c] = v;
-      vazio[c] = 0;
+      if (vazio[c]) { primeiro[c] = v; vazio[c] = 0; }
+      ultimo[c] = v;
+      conta[c]++;
     }
 
-    // colunas vazias (em escala log as primeiras dezenas de k sobram colunas
-    // sem amostra alguma) herdam a vizinha à esquerda, para o traço não abrir
-    // buracos que o leitor interpretaria como salto
-    var ultimoMin = NaN, ultimoMax = NaN;
-    for (c = 0; c < nCol; c++) {
-      if (!vazio[c]) { ultimoMin = min[c]; ultimoMax = max[c]; }
-      else if (isFinite(ultimoMin)) { min[c] = ultimoMin; max[c] = ultimoMax; vazio[c] = 0; }
-    }
-
-    return { min: min, max: max, vazio: vazio, colunas: nCol, k0: ini, k1: fim, escala: escala };
+    return { min: min, max: max, primeiro: primeiro, ultimo: ultimo,
+             conta: conta, vazio: vazio, colunas: nCol,
+             k0: ini, k1: fim, escala: escala };
   }
 
   /* Faixa vertical que contém o envelope, com folga. Devolve null se não houver
