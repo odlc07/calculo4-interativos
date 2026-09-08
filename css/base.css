@@ -153,6 +153,15 @@ body {
   letter-spacing: -.01em;
 }
 .navegacao .pendente { color: var(--tinta-fraca); opacity: .5; padding: var(--e1) 0; }
+/* Separa as duas páginas gerais dos seis módulos. O gap da nav vale dos dois
+   lados da barrinha, o que a deixaria boiando; a margem negativa recolhe parte
+   dele para que ela fique mais perto do vão do que dos rótulos vizinhos.
+   Decorativa: aria-hidden no HTML, para não ser lida como conteúdo. */
+.navegacao .nav-separador {
+  color: var(--linha-forte);
+  user-select: none;
+  margin: 0 calc(var(--e4) / -2);
+}
 
 /* ---- cabeçalho ---------------------------------------------------------- */
 
