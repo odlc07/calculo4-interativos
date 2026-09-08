@@ -45,6 +45,10 @@
      Claret, mais escuro e menos saturado que o de aviso: 8,1:1 sobre o papel,
      bem acima do mínimo, e sem o tom de alarme. */
   --crenca:            #8c2f39;
+  /* Claret a ~4% sobre o fundo. Só o suficiente para o bloco se destacar da
+     prosa de relance; não é fundo de aviso, e o texto continua no contraste
+     de --tinta-media. */
+  --crenca-fundo:      #faf4f4;
 
   --serif: Charter, "Bitstream Charter", "Iowan Old Style", Georgia, "Times New Roman", serif;
   --sans: "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
@@ -79,6 +83,7 @@
     --grafico-referencia:#7e858a;
     --grafico-limite:    #e8908f;
     --crenca:            #d99098;
+    --crenca-fundo:      #221d1f;
   }
 }
 
@@ -398,8 +403,9 @@ canvas:focus-visible { outline: 2px solid var(--destaque); outline-offset: 2px; 
 .crenca-falsa {
   max-width: var(--medida);
   margin: 0 0 var(--e5);
-  padding: var(--e3) 0 var(--e3) var(--e4);
-  border-left: 3px solid var(--crenca);
+  padding: var(--e3) var(--e4) var(--e3) var(--e4);
+  border-left: 4px solid var(--crenca);
+  background: var(--crenca-fundo);
   font-size: 1.05rem;
   font-style: italic;
   color: var(--tinta-media);
@@ -407,10 +413,10 @@ canvas:focus-visible { outline: 2px solid var(--destaque); outline-offset: 2px; 
 .crenca-rotulo {
   display: block;
   font-family: var(--sans);
-  font-size: .66rem;
-  font-weight: 600;
+  font-size: .76rem;
+  font-weight: 700;
   font-style: normal;
-  letter-spacing: .1em;
+  letter-spacing: .09em;
   text-transform: uppercase;
   color: var(--crenca);
   margin-bottom: var(--e2);
