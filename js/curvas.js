@@ -1,4 +1,4 @@
-/* curvas.js — as seis parametrizações e a reparametrização por comprimento de arco.
+/* curvas.js — as sete parametrizações e a reparametrização por comprimento de arco.
  *
  * Módulo puro: recebe números, devolve números. Não toca no DOM.
  * Registra-se em globalThis.Curvas (script clássico, ver fourier.js).
@@ -62,6 +62,21 @@
       nome: 'Círculo',
       singularidade: 'nenhuma; espectro finito',
       param: function (s) { return cosSin(s); }
+    },
+    /* O segmento é o contraexemplo mais curto à intuição de que círculos
+     * girando só produzem contornos arredondados: cos s = ½e^{is} + ½e^{−is},
+     * dois círculos de raio ½ em sentidos opostos, e a ponta percorre uma reta
+     * exata. Como y ≡ 0, TODO truncamento continua sobre o eixo real — a reta
+     * é exata em qualquer K, não apenas no limite. Em arco, o percurso vira
+     * onda triangular e o decaimento cai para n⁻², que é a mesma lição da
+     * astroide na sua forma mais nua. */
+    {
+      id: 'segmento',
+      previsto: { modelo: 'potencia', expoente: -2, rotulo: 'n⁻²',
+                   razao: 'o retorno inverte a tangente: em arco, onda triangular' },
+      nome: 'Segmento',
+      singularidade: 'reta; dois pontos de retorno',
+      param: function (s) { return [cosSin(s)[0], 0]; }
     },
     {
       id: 'fermat4',

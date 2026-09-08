@@ -106,9 +106,9 @@
   // 1. Parametrizações
   // =========================================================================
 
-  teste('Curvas', 'As seis curvas estão registradas com id único', function () {
+  teste('Curvas', 'As sete curvas estão registradas com id único', function () {
     var cs = todasCurvas();
-    ok(cs.length === 6, 'esperava 6 curvas, achei ' + cs.length);
+    ok(cs.length === 7, 'esperava 7 curvas, achei ' + cs.length);
     var vistos = {};
     for (var i = 0; i < cs.length; i++) {
       ok(!vistos[cs[i].id], 'id repetido: ' + cs[i].id);
@@ -177,7 +177,7 @@
   // 2. Reparametrização por comprimento de arco
   // =========================================================================
 
-  teste('Arco', 'Espaçamento em arco é constante nas seis curvas', function () {
+  teste('Arco', 'Espaçamento em arco é constante nas sete curvas', function () {
     var out = [];
     todasCurvas().forEach(function (c) {
       var r = global.Curvas.reamostrarPorArco(c, 512, 6000);
@@ -454,7 +454,7 @@
       out.push(c.nome + ': previsto ' + c.previsto.expoente +
                ', medido ' + aj.expoente.toFixed(3));
     });
-    ok(out.length === 2, 'esperava 2 curvas com expoente previsto, achei ' + out.length);
+    ok(out.length === 3, 'esperava 3 curvas com expoente previsto, achei ' + out.length);
     return out.join('; ');
   });
 
