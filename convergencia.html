@@ -33,7 +33,7 @@
   <p class="crenca-falsa">
     <span class="crenca-rotulo">A crença que este módulo desfaz</span>
     “Somando termos suficientes, a soma parcial chega tão perto quanto se queira da função.
-    A orelha que aparece no salto é resíduo de conta, e some quando N cresce.”
+    A orelha no salto vai ficando mais estreita a cada N, e é assim que ela desaparece.”
   </p>
 
   <div class="introducao">
@@ -68,6 +68,22 @@
       segundo é o overshoot de Gibbs, a orelha logo depois do salto: ela
       <span class="destaque-texto">estreita mas não encolhe</span>, estacionando em cerca de
       8,95% da altura do salto. Na triangular, o erro máximo simplesmente cai a zero.
+    </p>
+
+    <p>
+      <strong>Vale entender por que a orelha parece sumir.</strong> O pico dela fica em
+      <span class="math" data-math="x=\pi/(2N)"></span>, ou seja, desliza para dentro do salto
+      conforme <span class="math" data-math="N"></span> cresce: está a
+      <span class="math" data-math="0{,}314"></span> da descontinuidade em
+      <span class="math" data-math="N=5"></span> e a <span class="math" data-math="0{,}0079"></span>
+      em <span class="math" data-math="N=200"></span>. Fixe um ponto qualquer fora do salto e a
+      orelha acabará passando por ele e o deixando para trás — é por isso que a série
+      <em>converge</em> em todo ponto fora da descontinuidade. O que não acompanha é a altura,
+      que estaciona em <span class="math" data-math="0{,}2811"></span>. Em cada
+      <span class="math" data-math="N"></span> ainda existe <em>algum</em> ponto onde o erro vale
+      quase 9% do salto; ele só muda de endereço. <span class="destaque-texto">Estreitar não é
+      encolher</span>, e a distância entre as duas coisas é exatamente a distância entre
+      convergir ponto a ponto e convergir uniformemente.
     </p>
   </div>
 
